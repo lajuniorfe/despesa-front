@@ -1,0 +1,77 @@
+<div class="card w-full  p-4 bg-blue-50">
+  <div class="grid align-items-center ">
+    <!-- ESQUERDA -->
+    <div class="col-12 md:col-6">
+
+      <!-- Saudação -->
+      <div class="mb-3">
+        <span class="text-color-secondary">Boa tarde</span>
+        <h2 class="m-0 font-semibold">Olá, {{usuario}}</h2>
+      </div>
+
+      <!-- RESUMO -->
+      <div class="flex align-items-center gap-4">
+
+        <!-- Receita -->
+        <div>
+          <span class="text-color-secondary text-sm">
+            Receitas no mês atual
+          </span>
+          <div class="text-green-500 text-xl font-bold">
+            {{receitasMesAtual}}
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="width:1px; height:40px; background-color: black" ;></div>
+
+        <!-- Despesa -->
+        <div>
+          <span class=" text-color-secondary text-sm">
+            Despesas no mês atual
+          </span>
+          <div class="text-red-500 text-xl font-bold">
+            {{despesasMesAtual}}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- DIREITA -->
+    <div class="col-12 md:col-6 border-left-2">
+
+      <h3 class="mb-3 text-center">Acesso rápido</h3>
+
+      <div class="flex gap-3 justify-content-center">
+
+        <!-- Botão -->
+        <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <span class="text-sm">Despesa</span>
+        </div>
+
+        <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <span class="text-sm">Visualizar Despesas</span>
+        </div>
+
+        <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <span class="text-sm">Receita</span>
+        </div>
+
+        <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <span class="text-sm">Cartão</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

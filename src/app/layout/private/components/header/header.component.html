@@ -1,0 +1,31 @@
+<p-toolbar>
+  <ng-template pTemplate="start">
+    <div class="flex align-itens-center gap-3">
+      <span class="text-xl font-bold text-primary  cursor-pointer flex align-itens-center" routerLink="/">
+        Financeiro
+      </span>
+
+      <div class="flex align-itens-center gap-3 ml-3">
+        <a routerLink="/" class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
+          Dashboard
+        </a>
+
+        <a routerLink="/despesas" class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
+          Despesas
+        </a>
+
+        <a routerLink="/cartoes" class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
+          Cartões
+        </a>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="end">
+    <div class="flex align-itens-center gap-3">
+      <p-button icon="pi pi-bell" [text]="true"></p-button>
+      <p-button icon="pi pi-user" [text]="true"></p-button>
+
+    </div>
+  </ng-template>
+</p-toolbar>
