@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
 import { Tabs, TabList, TabsModule } from 'primeng/tabs';
+import { DespesaResponse } from '../../../despesas/models/despesa-response.model';
 
 @Component({
   selector: 'app-exibir-despesas',
@@ -11,6 +12,8 @@ import { Tabs, TabList, TabsModule } from 'primeng/tabs';
   styleUrl: './exibir-despesas.component.css',
 })
 export class ExibirDespesasComponent {
+  @Input() listaDespesasRecebida: DespesaResponse[] = [];
+
   listaDespesaCasa = [
     { nome: 'Supermercado Guanabara', categoria: 'Casa', valor: 185.9, pagamento: 'Cartão Nubank' },
     { nome: 'Conta de Luz', categoria: 'Casa', valor: 120.45, pagamento: 'Débito automático' },

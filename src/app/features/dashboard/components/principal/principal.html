@@ -18,7 +18,7 @@
             Receitas no mês atual
           </span>
           <div class="text-green-500 text-xl font-bold">
-            {{receitasMesAtual}}
+            {{receitasMesAtual }}
           </div>
         </div>
 
@@ -31,10 +31,9 @@
             Despesas no mês atual
           </span>
           <div class="text-red-500 text-xl font-bold">
-            {{despesasMesAtual}}
+            {{valorDespesasMesAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
           </div>
         </div>
-
       </div>
 
     </div>
@@ -49,7 +48,8 @@
 
         <!-- Botão -->
         <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
-          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2" (onClick)="cadastrarDespesa()">
+          </p-button>
           <span class="text-sm">Despesa</span>
         </div>
 

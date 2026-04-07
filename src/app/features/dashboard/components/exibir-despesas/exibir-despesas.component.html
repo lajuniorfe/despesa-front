@@ -8,44 +8,44 @@
     </p-tablist>
     <p-tabpanels>
       <p-tabpanel value="0">
-        <p-table [value]="listaDespesaIndividual" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 15]"
+        <p-table [value]="listaDespesasRecebida" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 15]"
           [scrollable]="true" scrollHeight="400px" class="h-full">
           <ng-template #header>
             <tr>
               <th>Descrição</th>
               <th>Categoria</th>
               <th>Valor</th>
-              <th>Pagamento</th>
+              <th>Tipo</th>
             </tr>
           </ng-template>
           <ng-template #body let-despesa>
             <tr>
-              <td>{{ despesa.nome }}</td>
-              <td>{{ despesa.categoria }}</td>
+              <td>{{ despesa.descricao }}</td>
+              <td>{{ despesa.categoria.nome }}</td>
               <td>{{ despesa.valor }}</td>
-              <td>{{ despesa.pagamento }}</td>
+              <td>{{ despesa.recorrencia.nome }}</td>
             </tr>
           </ng-template>
         </p-table>
       </p-tabpanel>
 
       <p-tabpanel value="1">
-        <p-table [value]="listaDespesaCasa" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 15]"
+        <p-table [value]="listaDespesasRecebida" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 15]"
           [scrollable]="true" scrollHeight="400px" class="h-full">
           <ng-template #header>
             <tr>
               <th>Descrição</th>
               <th>Categoria</th>
               <th>Valor</th>
-              <th>Pagamento</th>
+              <th>Tipo</th>
             </tr>
           </ng-template>
           <ng-template #body let-despesa>
             <tr>
-              <td>{{ despesa.nome }}</td>
-              <td>{{ despesa.categoria }}</td>
+              <td>{{ despesa.descricao }}</td>
+              <td>{{ despesa.categoria.nome }}</td>
               <td>{{ despesa.valor }}</td>
-              <td>{{ despesa.pagamento }}</td>
+              <td>{{ despesa.recorrencia.nome }}</td>
             </tr>
           </ng-template>
         </p-table>

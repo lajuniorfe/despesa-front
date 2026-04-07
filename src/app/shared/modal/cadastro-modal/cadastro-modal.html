@@ -1,0 +1,104 @@
+@if(carregando){
+<div class="flex justify-center items-center h-screen">
+  <p-progress-spinner ariaLabel="Carregando..." />
+</div>
+}@else {
+<div class="card w-full m-0 max-w-xl">
+  <form [formGroup]="formulario" class="w-full">
+    <div class="flex flex-column mb-5">
+      <label class=" block mb-1 text-sm font-medium text-gray-600" for="username">Descrição</label>
+      <input formControlName="descricao" class=" w-full" id="username" pInputText autocomplete="off" />
+    </div>
+
+    <div class="flex gap-2 mb-5">
+      <div class="flex flex-column flex-1">
+        <label class="w-full text-gray-600" for="username">Valor</label>
+        <input formControlName="valor" class=" w-full" id="username" pInputText autocomplete="off" />
+      </div>
+      <div class="flex flex-column flex-1">
+        <label class=" w-full text-gray-600" for="username">Data</label>
+        <p-datepicker formControlName="data" placeholder="dd/mm/yyyy" pInputMask="99/99/9999" dateFormat="dd/mm/yy"
+          appendTo="body" />
+      </div>
+    </div>
+
+    <div class="flex gap-2 mb-5  w-full">
+      <div class="flex flex-column w-6">
+        <label class="text-gray-600 w-full" for="formaPagamento">Tipo de Pagamento</label>
+        <p-select [options]="grupoTipoPagamento" formControlName="tipoPagamento" optionLabel="label"
+          placeholder="Selecione o tipo de pagamento" class="w-full " [group]="true" appendTo="body">
+          <ng-template let-group #group>
+            <div class="flex items-center ">
+              <strong><span class="font-bold text-lg">{{ group.label }}</span></strong>
+            </div>
+          </ng-template>
+
+          <ng-template let-item pTemplate="item">
+            <div class="flex items-center">
+              <span class="text-xs font-normal"> {{ item.label }}</span>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+      <div class="flex flex-column w-6">
+        <label class="text-gray-600 w-full" for="categoria">Categoria</label>
+        <p-select [options]="grupoTipoCategoria" formControlName="categoria" optionLabel="label"
+          placeholder="Selecione a categoria" class="w-full " [group]="true" appendTo="body">
+          <ng-template let-group #group>
+            <div class="flex items-center ">
+              <i class="mr-2" [ngClass]="'pi ' + group.icon"></i>
+              <strong><span class="ml-2 font-bold text-lg">{{ group.label }}</span></strong>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+    </div>
+
+
+    @if(recorrente){
+    <div class="card flex flex-column gap-1 items-start mb-4">
+      <div class="flex items-center">
+        <p-radiobutton formControlName="recorrencia" name="recorrencia" [value]="1" />
+        <label class="ml-1">é uma despesa fixa</label>
+      </div>
+
+      <div class="flex items-center">
+        <p-radiobutton formControlName="recorrencia" name="recorrencia" [value]="2" />
+        <label class="ml-1">é um lançamento parcelado em </label>
+      </div>
+
+
+      @if(formulario.value.recorrencia == 2){
+      <div class="flex items-center">
+        <input formControlName="parcela" class="" id="parcela" pInputText autocomplete="off" />
+
+      </div>
+      <div class="flex items-center">
+        <span>Serão lançadas {{numeroParcela}} parcelas de {{valorParcelas | currency:'BRL':'symbol':'1.2-2':'pt-BR'
+          }}</span>
+      </div>
+      <div class="flex items-center ">
+        <span>Em caso de divisão não exata, a sobra será somada à primeira parcela.</span>
+      </div>
+      }
+    </div>
+    }
+
+    <div class="flex gap-2 mx-auto w-fit mb-3">
+      <p-button label="Repetir" severity="secondary" icon="pi pi-arrow-right-arrow-left"
+        (click)="recorrente =!recorrente" />
+      <p-button label="Despesa Compartilhada" severity="secondary" icon="pi pi-users" />
+    </div>
+
+    <div class="flex gap-2 mx-auto w-fit">
+      <p-button label="Cancelar" variant="text" severity="danger" (onClick)="fecharModal()" />
+      <p-button [rounded]="true" icon="pi pi-check" size="large" (onClick)="cadastrarDespesaFechando()" />
+      <p-button label="Salvar e criar outra" variant="text" severity="success"
+        (onClick)="cadastrarDespesaContinuando()" />
+
+    </div>
+  </form>
+
+
+</div>
+}
