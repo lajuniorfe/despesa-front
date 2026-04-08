@@ -9,8 +9,9 @@ import { TableModule } from 'primeng/table';
 import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
-import { CadastroModal } from '../../../../shared/modal/cadastro-modal/cadastro-modal';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TokenService } from '../../../../shared/services/token/token.service';
+import { UsuarioAutenticado } from '../../../usuarios/models/usuario-autenticado.model';
+import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
 @Component({
   selector: 'app-principal',
   imports: [
@@ -24,27 +25,31 @@ import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dy
     DataViewModule,
     TagModule,
     CommonModule,
+    CadastroDespesaComponent,
   ],
   templateUrl: './principal.html',
   styleUrl: './principal.css',
-  providers: [DialogService],
 })
 export class Principal {
-  usuario = 'Júnior';
+  usuario!: UsuarioAutenticado;
   receitasMesAtual = 'R$ 13.250,00';
   @Input() valorDespesasMesAtual: number = 0;
   mesAtual = 'Abril';
   totalFaturas = 'R$ 4.364,34';
   totalIndividual = 'R$ 4.364,34';
-  ref: DynamicDialogRef | null = null;
+  mostrarCadastro = false;
 
-  constructor(private dialogService: DialogService) {}
+  constructor(private readonly tokenService: TokenService) {}
+
+  ngOnInit() {
+    this.usuario = this.tokenService.obterUsuarioLogado();
+  }
 
   cadastrarDespesa() {
-    this.ref = this.dialogService.open(CadastroModal, {
-      header: 'Nova Despesa',
-      width: '40%',
-      data: {},
-    });
+    this.mostrarCadastro = true;
+  }
+
+  fecharCadastro() {
+    this.mostrarCadastro = false;
   }
 }

@@ -1,52 +1,54 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
-import { Button } from 'primeng/button';
+import { Component, EventEmitter, NgZone, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
-  Validators,
-  ReactiveFormsModule,
   FormsModule,
+  ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { DespesaRequest } from '../../../features/despesas/models/despesa-request.model';
-import { DespesasService } from '../../../features/despesas/services/despesas.service';
-import { DatePickerModule } from 'primeng/datepicker';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { SelectModule } from 'primeng/select';
-import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
-import { CurrencyPipe, NgComponentOutlet, NgClass } from '@angular/common';
-import { TipoPagamentoService } from '../../../features/tipo-pagamentos/services/tipo-pagamento.service';
-import { TipoPagamentoResponse } from '../../../features/tipo-pagamentos/models/tipo-pagamento-response.model';
-import { CategoriaResponse } from '../../../features/categorias/models/categoria-response.model';
-import { CategoriaService } from '../../../features/categorias/services/categoria.service';
-import { CartaoResponse } from '../../../features/cartoes/models/cartao-response.model';
-import { CartaoService } from '../../../features/cartoes/services/cartao.service';
-import { switchMap } from 'rxjs';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TipoCategoriaEnum } from '../../enums/tipoCategora.enum';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { TokenService } from '../../../../shared/services/token/token.service';
+import { CartaoService } from '../../../cartoes/services/cartao.service';
+import { CategoriaService } from '../../../categorias/services/categoria.service';
+import { TipoPagamentoService } from '../../../tipo-pagamentos/services/tipo-pagamento.service';
+import { DespesasService } from '../../services/despesas.service';
+import { CartaoResponse } from '../../../cartoes/models/cartao-response.model';
+import { CategoriaResponse } from '../../../categorias/models/categoria-response.model';
+import { TipoPagamentoResponse } from '../../../tipo-pagamentos/models/tipo-pagamento-response.model';
+import { DespesaRequest } from '../../models/despesa-request.model';
+import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
+import { forkJoin, Observable, switchMap } from 'rxjs';
+import { Button } from 'primeng/button';
+import { RadioButton } from 'primeng/radiobutton';
+import { Select } from 'primeng/select';
+import { DatePicker } from 'primeng/datepicker';
+import { CurrencyPipe, NgClass } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 
 @Component({
-  selector: 'app-cadastro-modal',
+  selector: 'app-cadastro-despesa',
   imports: [
-    InputTextModule,
     Button,
-    ReactiveFormsModule,
-    DatePickerModule,
-    SelectModule,
     RadioButton,
-    ReactiveFormsModule,
-    RadioButtonModule,
-    FormsModule,
+    Select,
+    DatePicker,
     CurrencyPipe,
-    ProgressSpinnerModule,
     NgClass,
+    ReactiveFormsModule,
+    InputTextModule,
+    CardModule,
+    InputNumberModule,
   ],
-  templateUrl: './cadastro-modal.html',
-  styleUrl: './cadastro-modal.css',
+  templateUrl: './cadastro-despesa.component.html',
+  styleUrl: './cadastro-despesa.component.css',
 })
-export class CadastroModal {
+export class CadastroDespesaComponent {
+  @Output() fecharTelaEmitter = new EventEmitter();
   recorrente: boolean = false;
-  carregando = false;
+  compartilhada = false;
   idCartaoSelecionado: number = 0;
   idTipoPagamento: number = 0;
   numeroParcela: number = 0;
@@ -57,6 +59,9 @@ export class CadastroModal {
   listaCartao: CartaoResponse[] = [];
   grupoTipoPagamento: any[] | null = null;
   grupoTipoCategoria: any[] | null = null;
+  usuarioLogado: number = 0;
+  cadastrando: boolean = false;
+  telaPronta = false;
 
   constructor(
     private fb: FormBuilder,
@@ -64,14 +69,13 @@ export class CadastroModal {
     private readonly tipoPagamentoService: TipoPagamentoService,
     private readonly categoriaService: CategoriaService,
     private readonly cartaoService: CartaoService,
-    public ref: DynamicDialogRef,
-    private cdr: ChangeDetectorRef,
+    private readonly tokenService: TokenService,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit() {
-    this.buscaEncadeadaTipoPagamentoCartao();
-    this.listarCategorias();
     this.criarFormulario();
+    this.carregarDados();
     this.validarParcelaEscolhida();
     this.validarTipoPagamentoSelecionado();
   }
@@ -80,57 +84,87 @@ export class CadastroModal {
     this.formulario = this.fb.group({
       descricao: ['', Validators.required],
       valor: [null, Validators.required],
-      data: ['', Validators.required],
+      data: [new Date(), Validators.required],
       categoria: ['', Validators.required],
       tipoPagamento: ['', Validators.required],
-      compartilhada: ['', Validators.required],
       parcela: [null, Validators.required],
       recorrencia: [4, Validators.required],
     });
   }
 
   cadastrarDespesaFechando() {
-    this.cadastrarDespesa();
-    this.fecharModal();
+    this.cadastrando = true;
+    this.cadastrarDespesa().subscribe({
+      next: () => {
+        this.formulario.reset();
+        this.cadastrando = false;
+        this.fecharTelaEmitter.emit();
+      },
+      error: () => {
+        this.formulario.reset();
+        this.cadastrando = false;
+      },
+    });
   }
 
   cadastrarDespesaContinuando() {
-    this.cadastrarDespesa();
-    this.formulario.reset();
+    this.cadastrando = true;
+    this.cadastrarDespesa().subscribe({
+      next: () => {
+        this.formulario.reset();
+        this.cadastrando = false;
+      },
+      error: () => {
+        this.formulario.reset();
+        this.cadastrando = false;
+      },
+    });
   }
 
-  cadastrarDespesa() {
+  carregarDados() {
+    this.loadingService.show();
+
+    forkJoin({
+      listaTipoPagamento: this.tipoPagamentoService.listarTiposPagamento(),
+      cartoes: this.cartaoService.listarCartoes(),
+      categorias: this.categoriaService.listarCategorias(),
+    }).subscribe({
+      next: ({ listaTipoPagamento, cartoes, categorias }) => {
+        this.listaTipoPagamento = listaTipoPagamento;
+        ((this.listaCartao = cartoes), (this.listaCategoria = categorias));
+
+        this.agruparItensParaListaTipoPagamento();
+        this.agruparItensParaListaCategoria();
+
+        this.telaPronta = true;
+        this.loadingService.hide();
+      },
+      error: (error) => {
+        this.loadingService.hide();
+      },
+    });
+  }
+
+  cadastrarDespesa(): Observable<any> {
     const valores = this.formulario.value;
 
     const request: DespesaRequest = {
       descricao: valores.descricao,
       data: valores.data.toISOString(),
       valor: valores.valor,
-      idCategoria: valores.categoria.id,
+      idCategoria: valores.categoria.value,
       idRecorrencia: valores.recorrencia,
       idTipoPagamento: this.idTipoPagamento,
       idCartao: this.idCartaoSelecionado,
-      idUsuario: 1,
+      idUsuario: this.compartilhada === true ? 1 : this.tokenService.obterUsuarioLogado().id,
       parcela: valores.parcela ?? 1,
     };
 
-    this.despesaService.cadastrarDespesa(request).subscribe({
-      next: () => {
-        console.log('cadastrou');
-      },
-      error: (error) => {
-        console.log('deu erro', error);
-      },
-    });
-  }
-
-  fecharModal() {
-    this.formulario.reset();
-    this.ref.close();
+    return this.despesaService.cadastrarDespesa(request);
   }
 
   buscaEncadeadaTipoPagamentoCartao() {
-    this.carregando = true;
+    this.loadingService.show();
     this.tipoPagamentoService
       .listarTiposPagamento()
       .pipe(
@@ -142,10 +176,8 @@ export class CadastroModal {
       .subscribe({
         next: (responseCartao: CartaoResponse[]) => {
           this.listaCartao = responseCartao;
-
           this.agruparItensParaListaTipoPagamento();
-          this.carregando = false;
-          this.cdr.detectChanges();
+          this.loadingService.hide();
         },
       });
   }
@@ -221,28 +253,11 @@ export class CadastroModal {
     ];
   }
 
-  private listarCategorias() {
-    this.carregando = true;
-    this.categoriaService.listarCategorias().subscribe({
-      next: (response: CategoriaResponse[]) => {
-        this.listaCategoria = response;
-        console.log('categorias', this.listaCategoria);
-
-        this.agruparItensParaListaCategoria();
-
-        this.carregando = false;
-        this.cdr.detectChanges();
-      },
-      error(error) {},
-    });
-  }
-
   validarTipoPagamentoSelecionado() {
     this.formulario.get('tipoPagamento')?.valueChanges.subscribe((valor) => {
-      if (valor.tipo == 'contas') {
+      if (valor?.tipo == 'contas') {
         this.idTipoPagamento = valor.value;
-      } else {
-        //tipo pagamento é cartao
+      } else if (valor) {
         this.idTipoPagamento = 1;
         this.idCartaoSelecionado = valor.value;
       }
@@ -254,5 +269,10 @@ export class CadastroModal {
       this.numeroParcela = valor;
       this.valorParcelas = this.formulario.get('valor')?.value / this.numeroParcela;
     });
+  }
+
+  fecharTela() {
+    this.formulario.reset();
+    this.fecharTelaEmitter.emit();
   }
 }

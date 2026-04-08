@@ -4,35 +4,36 @@ import { ExibirDespesasComponent } from '../../components/exibir-despesas/exibir
 import { ExibirCartoes } from '../../components/exibir-cartoes/exibir-cartoes';
 import { DespesasService } from '../../../despesas/services/despesas.service';
 import { DespesaResponse } from '../../../despesas/models/despesa-response.model';
-import { ChangeDetectorRef } from '@angular/core';
 import { FaturaResponse } from '../../../faturas/models/faturas-response.model';
 import { InformacaoFaturasAgrupadas } from '../../../faturas/models/informacao-faturas-agrupada.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [Principal, ExibirDespesasComponent, ExibirCartoes, ProgressSpinnerModule],
+  imports: [Principal, ExibirDespesasComponent, ExibirCartoes, ProgressSpinnerModule, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.css',
 })
 export class HomeComponent {
-  constructor(
-    private readonly despesaService: DespesasService,
-    private cdr: ChangeDetectorRef,
-  ) {}
-
   listaDespesaMesAtual: DespesaResponse[] = [];
   valorTotalDespesasMes: number = 0;
   listaFaturas: FaturaResponse[] = [];
   listaAgrupada: InformacaoFaturasAgrupadas[] = [];
   carregando = false;
 
+  constructor(
+    private readonly despesaService: DespesasService,
+    private loadingService: LoadingService,
+  ) {}
+
   ngOnInit() {
     this.buscarDespesasMesAtual();
   }
 
   buscarDespesasMesAtual() {
-    this.carregando = true;
+    this.loadingService.show();
     const mesAtual = new Date().getMonth() + 2;
     this.despesaService.listarDespesasMesInformado(mesAtual).subscribe({
       next: (retorno: DespesaResponse[]) => {
@@ -43,11 +44,10 @@ export class HomeComponent {
         );
 
         this.agruparDespesasFaturaCartao();
-        this.carregando = false;
-        this.cdr.detectChanges();
+        this.loadingService.hide();
       },
       error: (erro) => {
-        this.carregando = false;
+        this.loadingService.hide();
       },
     });
   }
