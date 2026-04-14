@@ -43,12 +43,8 @@ export class Principal {
   @Output() despesaCadastradaEmit = new EventEmitter<DespesaRelacionamentoResponse>();
   usuario!: UsuarioResponse;
   mostrarCategorias: boolean = false;
-  mesAtual = 'Abril';
 
-  constructor(
-    private readonly tokenService: TokenService,
-    private homeComponent: HomeComponent,
-  ) {}
+  constructor(private readonly tokenService: TokenService) {}
 
   ngOnInit() {
     this.usuario = this.tokenService.obterUsuarioLogado();
