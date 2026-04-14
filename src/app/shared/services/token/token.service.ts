@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { UsuarioAutenticado } from '../../../features/usuarios/models/usuario-autenticado.model';
+import { UsuarioResponse } from '../../../features/usuarios/models/usuario-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
-  obterUsuarioLogado(): UsuarioAutenticado {
+  obterUsuarioLogado(): UsuarioResponse {
     const token = sessionStorage.getItem('token');
 
     if (token) {
       const payload = this.getPayloadFromToken(token);
-      const usuarioAutenticado: UsuarioAutenticado = {
+      const usuarioAutenticado: UsuarioResponse = {
         nome: payload.sub,
         id: payload.jti,
       };

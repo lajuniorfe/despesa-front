@@ -22,7 +22,7 @@
               </div>
             </div>
             <p-button class="flex-auto md:flex-initial whitespace-nowrap" label="Ver Fatura"
-              [disabled]="item.inventoryStatus === 'OUTOFSTOCK'" />
+              (onClick)="detalharFaturas(item)" />
           </div>
         </div>
 

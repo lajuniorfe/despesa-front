@@ -1,6 +1,10 @@
 <article class="flex flex-column align-items-center gap-3 mt-5">
   <div class="w-full md:w-10">
-    <app-principal [valorDespesasMesAtual]="valorTotalDespesasMes"></app-principal>
+    <app-principal [valorDespesasConjuntasMesAtual]="valorTotalDespesasMes"
+      [valorDespesasIndividuaisMesAtual]="valorTotalDespesasIndividuais" [saldoIndividual]="saldoIndividual"
+      [saldoPrevisto]="saldoPrevisto" [receitasMesAtual]="receitasMesAtual"
+      (despesaCadastradaEmit)="receberDespesaCadastrada($event)"
+      (cadastrarDespesaEmit)="cadastrarDespesa()"></app-principal>
   </div>
 
   <div class="w-full md:w-10">
@@ -10,8 +14,19 @@
       </div>
 
       <div class="col-12 md:col-6 p-1">
-        <app-exibir-cartoes [listaAgrupadas]="listaAgrupada"></app-exibir-cartoes>
+        <app-exibir-cartoes [listaAgrupadas]="listaAgrupada"
+          (detalharFaturasEmittir)="detalharFatura($event)"></app-exibir-cartoes>
       </div>
     </div>
   </div>
 </article>
+
+@if(exibirDetalheFatura){
+<app-detalhar-faturas [detalheFaturaAtual]="faturaRecebida"
+  (fecharTelaEmitir)="exibirDetalheFatura = !exibirDetalheFatura"></app-detalhar-faturas>
+}
+
+@if (mostrarCadastro) {
+<app-cadastro-despesa (fecharTelaEmitter)="fecharCadastro()"
+  (retornarDespesaCadastradaEmitter)=receberDespesaCadastrada($event)></app-cadastro-despesa>
+}

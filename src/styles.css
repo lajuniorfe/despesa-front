@@ -7,3 +7,6 @@
   padding: 0px;
   margin: 0px;
 }
+.p-confirmpopup {
+  z-index: 9999 !important;
+}

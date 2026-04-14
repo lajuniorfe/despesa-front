@@ -1,0 +1,35 @@
+<div class="overlay">
+  <div class="modal-wrapper" (click)="$event.stopPropagation()">
+    <p-card class="w-full bg-gray-50">
+      <ng-template #title> Editar {{categoriaRecebida.nome}} </ng-template>
+
+      <form [formGroup]="formulario" class="w-full mt-3">
+        <div class="flex flex-column mb-5">
+          <label class=" block mb-1 text-sm font-medium text-gray-600" for="nome">Nome</label>
+          <input formControlName="nome" class=" w-full" id="nome" pInputText autocomplete="off" />
+        </div>
+        <div class="flex flex-column mb-5">
+          <label class=" block mb-1 text-sm font-medium text-gray-600" for="tipo">Tipo Despesa</label>
+          <p-select [options]="grupoTipoCategoria" formControlName="tipo" optionLabel="label" optionValue="value"
+            placeholder="Selecione o tipo de pagamento" class="w-full ">
+            <ng-template let-item pTemplate="item">
+              <div class="flex items-center ">
+                <strong><span class="font-bold text-lg">{{ item.label }}</span></strong>
+              </div>
+            </ng-template>
+
+
+          </p-select>
+        </div>
+
+        <div class="flex gap-2 mx-auto w-fit mb-3">
+          <p-button label="Cancelar" severity="secondary" icon="pi pi-arrow-right-arrow-left" [disabled]="cadastrando"
+            (onClick)="fecharTela()" />
+
+          <p-button label="Salvar" severity="secondary" icon="pi pi-users" [loading]="cadastrando"
+            (onClick)="salvarCategoria()" />
+        </div>
+      </form>
+    </p-card>
+  </div>
+</div>

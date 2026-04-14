@@ -1,0 +1,43 @@
+<div class="overlay">
+  <div class="modal-wrapper">
+    <p-card class="w-full bg-gray-50">
+      <ng-template #title> Categorias </ng-template>
+      @if(categorias !== undefined){
+      <p-tree [value]="categorias" class="w-full md:w-[30rem] " scrollHeight="440px" [virtualScroll]="true"
+        [virtualScrollItemSize]="25">
+        <ng-template let-node pTemplate="default">
+          <div class="flex align-items-center w-full">
+            <span class="flex-1  truncate" [class.font-semibold]="!node.leaf">
+              {{ node.label }}
+            </span>
+
+            @if(node.leaf ){
+            <div class="flex gap-2 acoes">
+              <p-button styleClass="text-xs" label=" Editar" variant="text" (onClick)="editarCategoria(node)" />
+
+            </div>
+            }
+          </div>
+
+
+
+        </ng-template>
+
+      </p-tree>
+
+      <div class="flex gap-2 mx-auto w-fit mb-3">
+        <p-button label="Cancelar" severity="secondary" icon="pi pi-arrow-right-arrow-left" (onClick)="fecharTela()" />
+      </div>
+      }
+
+
+    </p-card>
+  </div>
+</div>
+
+@if(editaCategoria){
+<app-editar-categoria [categoriaRecebida]="categoriaSelecionada"
+  (emitirCategoriaAlterada)="atualizarCategoriaEditada($event)"
+  (emitirFecharEditarCategoria)="editaCategoria = editaCategoria=false">
+</app-editar-categoria>
+}

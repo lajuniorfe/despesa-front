@@ -5,11 +5,12 @@ import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 
 registerLocaleData(localePt, 'pt-BR');
 
 export const appConfig: ApplicationConfig = {
-  // providers: [provideBrowserGlobalErrorListeners(), provideRouter(routes)],
   providers: [
     providePrimeNG({
       theme: {
@@ -54,5 +55,6 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideRouter(routes),
+    provideHttpClient(withInterceptors([AuthInterceptor])),
   ],
 };

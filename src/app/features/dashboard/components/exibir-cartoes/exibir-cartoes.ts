@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Divider } from 'primeng/divider';
@@ -13,6 +13,7 @@ import { InformacaoFaturasAgrupadas } from '../../../faturas/models/informacao-f
 })
 export class ExibirCartoes {
   @Input() listaAgrupadas: InformacaoFaturasAgrupadas[] = [];
+  @Output() detalharFaturasEmittir = new EventEmitter<InformacaoFaturasAgrupadas>();
   totalFaturas = 0;
 
   ngOnChanges() {
@@ -20,5 +21,9 @@ export class ExibirCartoes {
       (total, cartao) => total + cartao.valorFatura,
       0,
     );
+  }
+
+  detalharFaturas(faturaCartao: InformacaoFaturasAgrupadas) {
+    this.detalharFaturasEmittir.emit(faturaCartao);
   }
 }

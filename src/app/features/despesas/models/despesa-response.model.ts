@@ -2,6 +2,7 @@ import { CategoriaResponse } from '../../categorias/models/categoria-response.mo
 import { FaturaResponse } from '../../faturas/models/faturas-response.model';
 import { RecorrenciaResponse } from '../../tipo-despesas/models/recorrencia-response.model';
 import { TipoPagamentoResponse } from '../../tipo-pagamentos/models/tipo-pagamento-response.model';
+import { UsuarioResponse } from '../../usuarios/models/usuario-response.model';
 
 export interface DespesaResponse {
   id: number;
@@ -13,4 +14,5 @@ export interface DespesaResponse {
   recorrencia: RecorrenciaResponse;
   tipoPagamento: TipoPagamentoResponse;
   fatura: FaturaResponse;
+  usuario: UsuarioResponse;
 }

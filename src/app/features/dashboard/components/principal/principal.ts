@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
@@ -10,8 +10,11 @@ import { DataViewModule } from 'primeng/dataview';
 import { TagModule } from 'primeng/tag';
 import { CommonModule } from '@angular/common';
 import { TokenService } from '../../../../shared/services/token/token.service';
-import { UsuarioAutenticado } from '../../../usuarios/models/usuario-autenticado.model';
 import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
+import { GerenciarCategoriasComponent } from '../../../categorias/components/gerenciar/gerenciar-categorias.component';
+import { UsuarioResponse } from '../../../usuarios/models/usuario-response.model';
+import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
+import { HomeComponent } from '../../pages/home/home.component';
 @Component({
   selector: 'app-principal',
   imports: [
@@ -25,31 +28,47 @@ import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/
     DataViewModule,
     TagModule,
     CommonModule,
-    CadastroDespesaComponent,
+    GerenciarCategoriasComponent,
   ],
   templateUrl: './principal.html',
   styleUrl: './principal.css',
 })
 export class Principal {
-  usuario!: UsuarioAutenticado;
-  receitasMesAtual = 'R$ 13.250,00';
-  @Input() valorDespesasMesAtual: number = 0;
+  @Input() valorDespesasConjuntasMesAtual: number = 0;
+  @Input() valorDespesasIndividuaisMesAtual: number = 0;
+  @Input() saldoIndividual: number = 0;
+  @Input() saldoPrevisto: number = 0;
+  @Input() receitasMesAtual: number = 0;
+  @Output() cadastrarDespesaEmit = new EventEmitter();
+  @Output() despesaCadastradaEmit = new EventEmitter<DespesaRelacionamentoResponse>();
+  usuario!: UsuarioResponse;
+  mostrarCategorias: boolean = false;
   mesAtual = 'Abril';
-  totalFaturas = 'R$ 4.364,34';
-  totalIndividual = 'R$ 4.364,34';
-  mostrarCadastro = false;
 
-  constructor(private readonly tokenService: TokenService) {}
+  constructor(
+    private readonly tokenService: TokenService,
+    private homeComponent: HomeComponent,
+  ) {}
 
   ngOnInit() {
     this.usuario = this.tokenService.obterUsuarioLogado();
   }
 
+  ngOnChanges() {}
+
   cadastrarDespesa() {
-    this.mostrarCadastro = true;
+    this.cadastrarDespesaEmit.emit();
   }
 
-  fecharCadastro() {
-    this.mostrarCadastro = false;
+  gerenciarCategorias() {
+    this.mostrarCategorias = true;
+  }
+
+  fecharCategorias() {
+    this.mostrarCategorias = false;
+  }
+
+  receberDespesaCadastrada(despesa: DespesaRelacionamentoResponse) {
+    this.despesaCadastradaEmit.emit(despesa);
   }
 }

@@ -1,55 +1,63 @@
+import { CommonModule } from '@angular/common';
+import { TipoCategoriaEnum } from './../../../../shared/enums/tipoCategora.enum';
 import { Component, Input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
 import { Tabs, TabList, TabsModule } from 'primeng/tabs';
-import { DespesaResponse } from '../../../despesas/models/despesa-response.model';
+import { TokenService } from '../../../../shared/services/token/token.service';
+import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
+import { InputIconModule } from 'primeng/inputicon';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-exibir-despesas',
-  imports: [Tabs, TabList, TabsModule, TableModule, DataViewModule, ButtonModule],
+  imports: [
+    Tabs,
+    TabList,
+    TabsModule,
+    TableModule,
+    DataViewModule,
+    ButtonModule,
+    CommonModule,
+    InputIconModule,
+    IconFieldModule,
+    InputTextModule,
+  ],
   templateUrl: './exibir-despesas.component.html',
   styleUrl: './exibir-despesas.component.css',
 })
 export class ExibirDespesasComponent {
-  @Input() listaDespesasRecebida: DespesaResponse[] = [];
+  tipoCategoriaEnum = TipoCategoriaEnum;
+  @Input() listaDespesasRecebida: DespesaRelacionamentoResponse[] = [];
+  listaDespesasConjuntas: DespesaRelacionamentoResponse[] = [];
+  listaDespesasIndividuais: DespesaRelacionamentoResponse[] = [];
+  valorTotalIndividual = 0;
+  valorTotalCasal = 0;
 
-  listaDespesaCasa = [
-    { nome: 'Supermercado Guanabara', categoria: 'Casa', valor: 185.9, pagamento: 'Cartão Nubank' },
-    { nome: 'Conta de Luz', categoria: 'Casa', valor: 120.45, pagamento: 'Débito automático' },
-    { nome: 'Internet Fibra', categoria: 'Casa', valor: 99.9, pagamento: 'Cartão Inter' },
-    { nome: 'Água', categoria: 'Casa', valor: 78.3, pagamento: 'Boleto' },
-    { nome: 'Compra Mercado Extra', categoria: 'Casa', valor: 210.75, pagamento: 'Cartão Itaú' },
-    { nome: 'Gás de cozinha', categoria: 'Casa', valor: 110.0, pagamento: 'Pix' },
-    { nome: 'Produtos de limpeza', categoria: 'Casa', valor: 65.2, pagamento: 'Cartão Nubank' },
-    { nome: 'Padaria', categoria: 'Casa', valor: 32.5, pagamento: 'Dinheiro' },
-    { nome: 'Manutenção elétrica', categoria: 'Casa', valor: 150.0, pagamento: 'Pix' },
-    { nome: 'Compra 1', categoria: 'Casa', valor: 30.0, pagamento: 'Cartão X' },
-  ];
+  constructor(private readonly tokenService: TokenService) {}
 
-  listaDespesaIndividual = [
-    {
-      nome: 'Almoço no restaurante',
-      categoria: 'Alimentação',
-      valor: 42.5,
-      pagamento: 'Cartão Nubank',
-    },
-    { nome: 'Uber', categoria: 'Transporte', valor: 18.9, pagamento: 'Cartão Inter' },
-    { nome: 'Netflix', categoria: 'Entretenimento', valor: 39.9, pagamento: 'Cartão de crédito' },
-    { nome: 'Academia', categoria: 'Saúde', valor: 89.9, pagamento: 'Débito automático' },
-    { nome: 'Café', categoria: 'Alimentação', valor: 9.5, pagamento: 'Pix' },
-    { nome: 'Compra de roupa', categoria: 'Vestuário', valor: 120.0, pagamento: 'Cartão Itaú' },
-    { nome: 'Cinema', categoria: 'Entretenimento', valor: 35.0, pagamento: 'Cartão Nubank' },
-    { nome: 'iFood', categoria: 'Alimentação', valor: 55.7, pagamento: 'Cartão Inter' },
-    { nome: 'Farmácia', categoria: 'Saúde', valor: 27.3, pagamento: 'Dinheiro' },
-    { nome: 'Compra 1', categoria: 'Casa', valor: 30.0, pagamento: 'Cartão X' },
-  ];
+  ngOnChanges() {
+    if (this.listaDespesasRecebida.length > 0) {
+      const usuarioLogado = this.tokenService.obterUsuarioLogado();
 
-  listaDespesaFatura = [
-    { nome: 'Padaria', categoria: 'Casa', valor: 32.5, pagamento: 'Dinheiro' },
-    { nome: 'Manutenção elétrica', categoria: 'Casa', valor: 150.0, pagamento: 'Pix' },
-    { nome: 'Compra 1', categoria: 'Casa', valor: 30.0, pagamento: 'Cartão X' },
-  ];
+      this.listaDespesasConjuntas = this.listaDespesasRecebida.filter(
+        (d) => d.despesa.usuario.id == 1,
+      );
+      this.valorTotalCasal = this.listaDespesasConjuntas.reduce(
+        (total, despesa) => total + Number(despesa.valor || 0),
+        0,
+      );
 
-  tabSelecionada = 'individual';
+      this.listaDespesasIndividuais = this.listaDespesasRecebida.filter(
+        (d) => d.despesa.usuario.id == usuarioLogado.id,
+      );
+
+      this.valorTotalIndividual = this.listaDespesasIndividuais.reduce(
+        (total, despesa) => total + Number(despesa.valor || 0),
+        0,
+      );
+    }
+  }
 }
