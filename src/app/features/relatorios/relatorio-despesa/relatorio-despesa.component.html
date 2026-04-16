@@ -1,0 +1,53 @@
+<p-card header="Relatórios">
+  <div class="mt-2">
+    <div class="flex justify-content-center flex-wrap mb-0 pb-0">
+      <div class="flex align-items-center justify-content-center  font-bold border-round m-0">
+        <h3>{{mesAtual}}</h3>
+      </div>
+    </div>
+
+    <p-divider class="mb-1 mt-1"></p-divider>
+    <div class="flex justify-content-center flex-wrap ">
+      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Categorias</div>
+      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Tipos De Despesas</div>
+      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Algo</div>
+    </div>
+    <p-divider class="mt-1"></p-divider>
+
+    <div class="flex justify-content-start flex-wrap mb-0 pb-0">
+      <div class="flex align-items-center justify-content-center font-bold border-round m-0">
+        <h3>Categorias</h3>
+      </div>
+      <div class="flex align-items-center justify-content-center ml-6">
+        Filtros
+      </div>
+    </div>
+
+    <div>
+      <h3>Despesas</h3>
+      <div class="grid">
+        <div class="col-6">
+          <p-tree [value]="arvores" class="w-full md:w-[30rem] " scrollHeight="440px" [virtualScroll]="true"
+            [virtualScrollItemSize]="25">
+            <ng-template let-node pTemplate="default">
+              <div class="flex align-items-center w-full">
+                <span class="flex-1  truncate" [class.font-semibold]="!node.leaf">
+                  {{ node.label }}
+                </span>
+              </div>
+            </ng-template>
+          </p-tree>
+        </div>
+        <div class="col-6">
+          <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!-- <p class="m-0">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam
+    deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
+    quas!
+  </p> -->

@@ -13,6 +13,8 @@ import { TokenService } from '../../../../shared/services/token/token.service';
 import { UsuarioResponse } from '../../../usuarios/models/usuario-response.model';
 import { DetalharFaturasComponent } from '../../../faturas/components/detalhar-faturas/detalhar-faturas.component';
 import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
+import { CadastroReceitaComponent } from '../../../despesas/components/cadastro-despesa-receita/cadastro-receita.component';
+import { EstadoService } from '../../../../shared/services/utils/estado/estado.service';
 @Component({
   selector: 'app-home',
   imports: [
@@ -23,6 +25,7 @@ import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/
     CommonModule,
     DetalharFaturasComponent,
     CadastroDespesaComponent,
+    CadastroReceitaComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.css',
@@ -39,15 +42,20 @@ export class HomeComponent {
   exibirDetalheFatura: boolean = false;
   saldoPrevisto: number = 0;
   saldoIndividual: number = 0;
-  receitasMesAtual: number = 13250;
-  mostrarCadastro: boolean = false;
+  receitasMesAtual: number = 0;
+  receitaIndividual: number = 0;
+  mostrarCadastroDespesa: boolean = false;
+  mostrarCadastroReceita: boolean = false;
   saldoIndividualUsuarioLogado: number = 0;
   saldoIndividualUsuarioOffline: number = 0;
+  mesAtual = new Date().getMonth() + 2;
+  anoAtual = new Date().getFullYear();
 
   constructor(
     private readonly despesaService: DespesasService,
     private loadingService: LoadingService,
     private readonly tokenService: TokenService,
+    private estadoService: EstadoService,
   ) {}
 
   ngOnInit() {
@@ -57,20 +65,23 @@ export class HomeComponent {
   buscarDespesasMesAtual() {
     this.usuario = this.tokenService.obterUsuarioLogado();
     this.loadingService.show();
-    const mesAtual = new Date().getMonth() + 2;
-    const anoAtual = new Date().getFullYear();
 
-    this.despesaService.listarDespesasMesInformado(mesAtual, anoAtual).subscribe({
+    this.despesaService.listarDespesasMesInformado(this.mesAtual, this.anoAtual).subscribe({
       next: (retorno: DespesaRelacionamentoResponse[]) => {
-        this.listaDespesaMesAtual = retorno.sort((a, b) => {
+        const listaDespesas = retorno.filter((d) => d.despesa.categoria.tipo !== 5);
+        const listaReceitas = retorno.filter((d) => d.despesa.categoria.tipo === 5);
+
+        this.listaDespesaMesAtual = listaDespesas.sort((a, b) => {
           if (a.despesa.categoria.tipo === 1 && b.despesa.categoria.tipo !== 1) return -1;
           if (a.despesa.categoria.tipo !== 1 && b.despesa.categoria.tipo === 1) return 1;
 
           return new Date(a.data).getTime() - new Date(b.data).getTime();
         });
 
+        this.receitasMesAtual = this.calcularReceitaCasal(listaReceitas);
+        this.receitaIndividual = this.calcularReceitaIndividual(listaReceitas);
         this.valorTotalDespesasMes = this.calcularValorTotalDespesasUsuario(1);
-
+        this.estadoService.setInfo(this.listaDespesaMesAtual);
         this.valorTotalDespesasIndividuais =
           this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
 
@@ -95,6 +106,18 @@ export class HomeComponent {
       .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
   }
 
+  calcularReceitaCasal(receitas: DespesaRelacionamentoResponse[]) {
+    return (receitas || [])
+      .filter((d) => d.despesa.usuario.id == 1)
+      .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
+  }
+
+  calcularReceitaIndividual(receitas: DespesaRelacionamentoResponse[]) {
+    return (receitas || [])
+      .filter((d) => d.despesa.usuario.id == this.usuario.id)
+      .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
+  }
+
   calcularValorTotalDespesasIndividuaisUsuarioLogado() {
     return (this.listaDespesaMesAtual || [])
       .filter((d) => d.despesa.usuario.id == this.usuario.id)
@@ -106,7 +129,7 @@ export class HomeComponent {
   }
 
   calcularSaldoIndividual(saldo: number, valorDespesa: number): number {
-    return saldo / 2 - valorDespesa;
+    return saldo / 2 + this.receitaIndividual - valorDespesa;
   }
 
   private agruparDespesasFaturaCartao() {
@@ -165,13 +188,25 @@ export class HomeComponent {
     this.faturaRecebida = faturaRecebida;
   }
 
+  receberReceitaCadastrada(despesa: any) {
+    console.log(despesa);
+  }
+
   cadastrarDespesa() {
     this.checarSaldo();
-    this.mostrarCadastro = true;
+    this.mostrarCadastroDespesa = true;
+  }
+
+  cadastrarReceita() {
+    this.mostrarCadastroReceita = true;
   }
 
   fecharCadastro() {
-    this.mostrarCadastro = false;
+    this.mostrarCadastroDespesa = false;
+  }
+
+  fecharCadastroReceita() {
+    this.mostrarCadastroReceita = false;
   }
 
   checarSaldo() {

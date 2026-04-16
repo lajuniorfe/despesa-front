@@ -25,22 +25,23 @@
           </div>
           <div class="col-6">
             <div>
+              <span class="text-color-secondary text-sm">
+                Receita Individual
+              </span>
+              <div class="text-green-500 text-xl font-bold">
+                {{receitaIndividual| currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-6 ">
+            <div>
               <span class=" text-color-secondary text-sm">
                 Despesas Conjuntas
               </span>
               <div class="text-red-500 text-xl font-bold">
                 {{valorDespesasConjuntasMesAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
-              </div>
-            </div>
-          </div>
-
-          <div class="col-6 ">
-            <div>
-              <span class="text-color-secondary text-sm">
-                Saldo Individual
-              </span>
-              <div class="text-green-500 text-xl font-bold">
-                {{saldoIndividual| currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
               </div>
             </div>
           </div>
@@ -51,6 +52,22 @@
               </span>
               <div class="text-red-500 text-xl font-bold">
                 {{valorDespesasIndividuaisMesAtual | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 ">
+            <div>
+
+            </div>
+          </div>
+          <div class="col-6">
+            <div>
+              <span class="text-color-secondary text-sm">
+                Saldo Individual
+              </span>
+              <div class="text-green-500 text-xl font-bold">
+                {{saldoIndividual| currency:'BRL':'symbol':'1.2-2':'pt-BR'}}
               </div>
             </div>
           </div>
@@ -74,7 +91,8 @@
         </div>
 
         <div class="card flex flex-column align-items-center justify-content-center p-3 cursor-pointer">
-          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2"> </p-button>
+          <p-button icon="pi pi-plus" [text]="true" class="text-red-500 text-xl mb-2" (onClick)="cadastrarReceita()">
+          </p-button>
           <span class="text-sm">Receita</span>
         </div>
 

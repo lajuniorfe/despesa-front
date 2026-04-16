@@ -37,10 +37,11 @@ export class Principal {
   @Input() valorDespesasConjuntasMesAtual: number = 0;
   @Input() valorDespesasIndividuaisMesAtual: number = 0;
   @Input() saldoIndividual: number = 0;
-  @Input() saldoPrevisto: number = 0;
+
   @Input() receitasMesAtual: number = 0;
+  @Input() receitaIndividual: number = 0;
   @Output() cadastrarDespesaEmit = new EventEmitter();
-  @Output() despesaCadastradaEmit = new EventEmitter<DespesaRelacionamentoResponse>();
+  @Output() cadastrarReceitaEmitt = new EventEmitter();
   usuario!: UsuarioResponse;
   mostrarCategorias: boolean = false;
 
@@ -56,6 +57,10 @@ export class Principal {
     this.cadastrarDespesaEmit.emit();
   }
 
+  cadastrarReceita() {
+    this.cadastrarReceitaEmitt.emit();
+  }
+
   gerenciarCategorias() {
     this.mostrarCategorias = true;
   }
@@ -64,7 +69,7 @@ export class Principal {
     this.mostrarCategorias = false;
   }
 
-  receberDespesaCadastrada(despesa: DespesaRelacionamentoResponse) {
-    this.despesaCadastradaEmit.emit(despesa);
-  }
+  // receberDespesaCadastrada(despesa: DespesaRelacionamentoResponse) {
+  //   this.despesaCadastradaEmit.emit(despesa);
+  // }
 }

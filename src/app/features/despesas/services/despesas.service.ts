@@ -22,7 +22,7 @@ export class DespesasService {
   }
 
   cadastrarDespesa(request: DespesaRequest): Observable<DespesaRelacionamentoResponse> {
-    return this.http.post<DespesaRelacionamentoResponse>(`${this.caminho}/tanajura`, request, {
+    return this.http.post<DespesaRelacionamentoResponse>(`${this.caminho}`, request, {
       headers: this.headers,
     });
   }

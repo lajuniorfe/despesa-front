@@ -2,9 +2,8 @@
   <div class="w-full md:w-10">
     <app-principal [valorDespesasConjuntasMesAtual]="valorTotalDespesasMes"
       [valorDespesasIndividuaisMesAtual]="valorTotalDespesasIndividuais" [saldoIndividual]="saldoIndividual"
-      [saldoPrevisto]="saldoPrevisto" [receitasMesAtual]="receitasMesAtual"
-      (despesaCadastradaEmit)="receberDespesaCadastrada($event)"
-      (cadastrarDespesaEmit)="cadastrarDespesa()"></app-principal>
+      [receitasMesAtual]="receitasMesAtual" [receitaIndividual]="receitaIndividual"
+      (cadastrarReceitaEmitt)="cadastrarReceita()" (cadastrarDespesaEmit)="cadastrarDespesa()"></app-principal>
   </div>
 
   <div class="w-full md:w-10">
@@ -26,7 +25,14 @@
   (fecharTelaEmitir)="exibirDetalheFatura = !exibirDetalheFatura"></app-detalhar-faturas>
 }
 
-@if (mostrarCadastro) {
+@if (mostrarCadastroDespesa) {
 <app-cadastro-despesa (fecharTelaEmitter)="fecharCadastro()"
-  (retornarDespesaCadastradaEmitter)=receberDespesaCadastrada($event)></app-cadastro-despesa>
+  (retornarDespesaCadastradaEmitter)=receberDespesaCadastrada($event)
+  [saldoIndividualUsuarioLogado]="saldoIndividualUsuarioLogado"
+  [saldoIndividualUsuarioOffline]="saldoIndividualUsuarioOffline"></app-cadastro-despesa>
+}
+
+@if(mostrarCadastroReceita){
+<app-cadastro-receita (fecharTelaEmitter)="fecharCadastroReceita()"
+  (receberReceitaCadastrada)=receberReceitaCadastrada($event)></app-cadastro-receita>
 }

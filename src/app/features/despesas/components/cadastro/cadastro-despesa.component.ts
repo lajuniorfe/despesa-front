@@ -55,8 +55,8 @@ import { ToastModule } from 'primeng/toast';
 export class CadastroDespesaComponent {
   @Output() fecharTelaEmitter = new EventEmitter();
   @Output() retornarDespesaCadastradaEmitter = new EventEmitter<DespesaRelacionamentoResponse>();
-  // @Input() listaDespesasRecebida: DespesaRelacionamentoResponse[] = [];
-
+  @Input() saldoIndividualUsuarioLogado: number = 0;
+  @Input() saldoIndividualUsuarioOffline: number = 0;
   recorrente: boolean = false;
   compartilhada = false;
   idCartaoSelecionado: number = 0;
@@ -74,8 +74,6 @@ export class CadastroDespesaComponent {
   telaPronta = false;
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
-  @Input() saldoIndividualUsuarioLogado: number = 0;
-  @Input() saldoIndividualUsuarioOffline: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -109,7 +107,11 @@ export class CadastroDespesaComponent {
   async cadastrarDespesaFechando(event: Event) {
     const valores = this.formulario.value;
     const valorDespesa = valores.parcela === null ? valores.valor : valores.valor / valores.parcela;
-    const podeCadastrar = await this.checarSeDespesaUltrapassaOSaldoUsuarios(valorDespesa, event);
+    const podeCadastrar = await this.checarSeDespesaUltrapassaOSaldoUsuarios(
+      valorDespesa,
+      valores,
+      event,
+    );
 
     if (!podeCadastrar) return;
 
@@ -295,22 +297,17 @@ export class CadastroDespesaComponent {
     return TipoCategoriaUtilService.formatar(label);
   }
 
-  // calcularValorTotalDespesasIndividuais(idUsuario: number) {
-  //   return (this.listaDespesasRecebida || [])
-  //     .filter((d) => d.despesa.usuario.id == idUsuario)
-  //     .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
-  // }
-
   async checarSeDespesaUltrapassaOSaldoUsuarios(
     valorDespesa: number,
+    valoresFormulario: any,
     event: Event,
   ): Promise<boolean> {
-    // const despesaCasal = this.calcularValorTotalDespesasIndividuais(1);
-    // const SaldoConjunto = this.calcularSaldoConjunto(despesaCasal);
-    // const despesaUsuarioJunior = this.calcularValorTotalDespesasIndividuais(2);
-    // const saldoJunior = this.calcularSaldoIndividual(SaldoConjunto, despesaUsuarioJunior);
-    // const despesaUsuarioAllana = this.calcularValorTotalDespesasIndividuais(3);
-    // const saldoAllana = this.calcularSaldoIndividual(SaldoConjunto, despesaUsuarioAllana);
+    const dataDespesa = valoresFormulario.data.getMonth() + 1;
+    const mesAtual = new Date().getMonth() + 2;
+
+    if (dataDespesa != mesAtual) {
+      return true;
+    }
 
     let texto: string = '';
 
@@ -326,14 +323,6 @@ export class CadastroDespesaComponent {
 
     return await this.emitirAlerta(event, texto);
   }
-
-  // calcularSaldoConjunto(valorDespesa: number) {
-  //   return 13250 - valorDespesa;
-  // }
-
-  // calcularSaldoIndividual(saldoConjunto: number, valorDespesaIndividual: number) {
-  //   return saldoConjunto / 2 - valorDespesaIndividual;
-  // }
 
   emitirAlerta(event: Event, texto: string): Promise<boolean> {
     return new Promise((resolve) => {

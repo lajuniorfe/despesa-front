@@ -4,6 +4,7 @@ import { PrivateLayoutComponent } from './layout/private/private-layout';
 import { PublicLayoutComponent } from './layout/public/public-layout';
 import { LoginComponent } from './features/login/pages/login/login.component';
 import { AuthGuard } from './core/guards/auth-guard';
+import { RelatorioDespesaComponent } from './features/relatorios/relatorio-despesa/relatorio-despesa.component';
 
 export const routes: Routes = [
   {
@@ -16,5 +17,11 @@ export const routes: Routes = [
     path: '',
     component: PrivateLayoutComponent,
     children: [{ path: '', component: HomeComponent, canActivate: [AuthGuard] }],
+  },
+
+  {
+    path: 'relatorios',
+    component: PrivateLayoutComponent,
+    children: [{ path: '', component: RelatorioDespesaComponent, canActivate: [AuthGuard] }],
   },
 ];

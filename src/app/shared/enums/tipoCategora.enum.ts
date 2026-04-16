@@ -3,4 +3,5 @@ export enum TipoCategoriaEnum {
   'NaoEssencial' = 2,
   'Investimento' = 3,
   'Emergencial' = 4,
+  'Receita' = 5,
 }
