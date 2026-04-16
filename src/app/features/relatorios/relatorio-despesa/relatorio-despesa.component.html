@@ -1,16 +1,22 @@
 <p-card header="Relatórios">
   <div class="mt-2">
     <div class="flex justify-content-center flex-wrap mb-0 pb-0">
-      <div class="flex align-items-center justify-content-center  font-bold border-round m-0">
-        <h3>{{mesAtual}}</h3>
+      <div class="flex align-items-center justify-content-center font-bold border-round m-0">
+        <h3>{{ mesAtual }}</h3>
       </div>
     </div>
 
     <p-divider class="mb-1 mt-1"></p-divider>
-    <div class="flex justify-content-center flex-wrap ">
-      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Categorias</div>
-      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Tipos De Despesas</div>
-      <div class="flex align-items-center justify-content-center  font-bold border-round m-2">Algo</div>
+    <div class="flex justify-content-center flex-wrap">
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        Categorias
+      </div>
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        Tipos De Despesas
+      </div>
+      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
+        Algo
+      </div>
     </div>
     <p-divider class="mt-1"></p-divider>
 
@@ -18,36 +24,47 @@
       <div class="flex align-items-center justify-content-center font-bold border-round m-0">
         <h3>Categorias</h3>
       </div>
-      <div class="flex align-items-center justify-content-center ml-6">
-        Filtros
-      </div>
+      <div class="flex align-items-center justify-content-center ml-6">Filtros</div>
     </div>
 
     <div>
       <h3>Despesas</h3>
       <div class="grid">
         <div class="col-6">
-          <p-tree [value]="arvores" class="w-full md:w-[30rem] " scrollHeight="440px" [virtualScroll]="true"
-            [virtualScrollItemSize]="25">
-            <ng-template let-node pTemplate="default">
-              <div class="flex align-items-center w-full">
-                <span class="flex-1  truncate" [class.font-semibold]="!node.leaf">
-                  {{ node.label }}
-                </span>
-              </div>
-            </ng-template>
-          </p-tree>
+          @if (arvores?.length) {
+            <p-tree
+              [value]="arvores"
+              class="w-full md:w-[30rem]"
+              scrollHeight="440px"
+              [virtualScroll]="true"
+              [virtualScrollItemSize]="25"
+              (onNodeExpand)="selecionado($event)"
+            >
+              <ng-template let-node pTemplate="default">
+                <div class="flex align-items-center w-full justify-content-between">
+                  <span class="truncate" [class.font-semibold]="!node.leaf">
+                    <div class="flex flex-column align-items-start ml-2">{{ node.label }}</div>
+                    <div class="flex flex-column align-items-end ml-2">
+                      {{ node.data?.total | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                    </div>
+                  </span>
+                  <div class="flex flex-column align-items-end ml-2">
+                    <span class="text-xs text-gray-500">
+                      {{ node.data?.percentual / 100 | percent: '1.0-1' }}
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
+            </p-tree>
+          }
         </div>
         <div class="col-6">
-          <p-chart type="pie" [data]="data" [options]="options" class="w-full md:w-[30rem]" />
-
+          <h3>Exibindo gráfico de despesas do tipo: {{ graficodeque }}</h3>
+          @if (data) {
+            <p-chart type="pie" [data]="data" [options]="options" class="w-7" />
+          }
         </div>
       </div>
-
     </div>
   </div>
-  <!-- <p class="m-0">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam
-    deserunt quisquam repellat libero asperiores earum nam nobis, culpa ratione quam perferendis esse, cupiditate neque
-    quas!
-  </p> -->
+</p-card>

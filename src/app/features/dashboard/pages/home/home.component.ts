@@ -1,20 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Principal } from '../../components/principal/principal';
-import { ExibirDespesasComponent } from '../../components/exibir-despesas/exibir-despesas.component';
-import { ExibirCartoes } from '../../components/exibir-cartoes/exibir-cartoes';
-import { DespesasService } from '../../../despesas/services/despesas.service';
-import { FaturaResponse } from '../../../faturas/models/faturas-response.model';
-import { InformacaoFaturasAgrupadas } from '../../../faturas/models/informacao-faturas-agrupada.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoadingService } from '../../../../shared/services/loading/loading.service';
-import { CommonModule } from '@angular/common';
-import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
 import { TokenService } from '../../../../shared/services/token/token.service';
-import { UsuarioResponse } from '../../../usuarios/models/usuario-response.model';
-import { DetalharFaturasComponent } from '../../../faturas/components/detalhar-faturas/detalhar-faturas.component';
-import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
-import { CadastroReceitaComponent } from '../../../despesas/components/cadastro-despesa-receita/cadastro-receita.component';
 import { EstadoService } from '../../../../shared/services/utils/estado/estado.service';
+import { CadastroReceitaComponent } from '../../../despesas/components/cadastro-despesa-receita/cadastro-receita.component';
+import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
+import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
+import { DespesasService } from '../../../despesas/services/despesas.service';
+import { DetalharFaturasComponent } from '../../../faturas/components/detalhar-faturas/detalhar-faturas.component';
+import { FaturaResponse } from '../../../faturas/models/faturas-response.model';
+import { InformacaoFaturasAgrupadas } from '../../../faturas/models/informacao-faturas-agrupada.model';
+import { UsuarioResponse } from '../../../usuarios/models/usuario-response.model';
+import { ExibirCartoes } from '../../components/exibir-cartoes/exibir-cartoes';
+import { ExibirDespesasComponent } from '../../components/exibir-despesas/exibir-despesas.component';
+import { Principal } from '../../components/principal/principal';
 @Component({
   selector: 'app-home',
   imports: [
@@ -81,7 +81,11 @@ export class HomeComponent {
         this.receitasMesAtual = this.calcularReceitaCasal(listaReceitas);
         this.receitaIndividual = this.calcularReceitaIndividual(listaReceitas);
         this.valorTotalDespesasMes = this.calcularValorTotalDespesasUsuario(1);
-        this.estadoService.setInfo(this.listaDespesaMesAtual);
+
+        // this.estadoService.setInfo(this.listaDespesaMesAtual);
+
+        sessionStorage.setItem('despesas', JSON.stringify(this.listaDespesaMesAtual));
+
         this.valorTotalDespesasIndividuais =
           this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
 

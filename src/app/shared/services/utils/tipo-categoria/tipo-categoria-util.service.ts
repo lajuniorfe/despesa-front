@@ -22,4 +22,17 @@ export class TipoCategoriaUtilService {
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase();
   }
+
+  static capitalizar(valor: string): string {
+    return valor.charAt(0).toUpperCase() + valor.slice(1).toLowerCase();
+  }
+
+  static normalizarParaEnum(valor: string): string {
+    return valor
+      .normalize('NFD') // remove acento
+      .replace(/[\u0300-\u036f]/g, '')
+      .split(/[\s-]+/) // separa palavras
+      .map((p) => this.capitalizar(p)) // usa seu método aqui 👈
+      .join('');
+  }
 }
