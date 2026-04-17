@@ -1,0 +1,77 @@
+@if (arvores?.length) {
+  <div class="tree">
+    <ng-container *ngTemplateOutlet="treeTemplate; context: { $implicit: arvores, level: 0 }">
+    </ng-container>
+  </div>
+
+  <ng-template #treeTemplate let-nodes let-level="level">
+    <ng-container *ngFor="let node of nodes">
+      <div class="node">
+        <div class="flex align-items-center w-full py-1">
+          <div class="flex align-items-center justify-content-center mr-2">
+            @if (level == 0 || level == 1) {
+              <p-button
+                (onClick)="toggle(node)"
+                styleClass="border-0 border-transparent"
+                class="border-0 border-transparent"
+                [rounded]="true"
+                [icon]="
+                  node.data.tipo == 1 && level == 0
+                    ? 'ph ph-money'
+                    : node.data.tipo == 2 && level == 0
+                      ? 'ph ph-coins'
+                      : node.data.tipo == 3 && level == 0
+                        ? 'ph ph-piggy-bank'
+                        : node.data.tipo == 4 && level == 0
+                          ? 'ph ph-warning'
+                          : level == 1
+                            ? node.icon
+                            : ''
+                "
+                [styleClass]="
+                  node.data.tipo == 1
+                    ? 'bg-blue-500'
+                    : node.data.tipo == 2
+                      ? 'bg-green-500'
+                      : node.data.tipo == 3
+                        ? 'bg-yellow-500'
+                        : node.data.tipo == 4
+                          ? 'bg-red-500'
+                          : node.styleClass
+                "
+              />
+            }
+          </div>
+
+          <div>{{ node.label }}</div>
+
+          @if (level == 0 || level == 1) {
+            <div class="flex flex-column align-items-end ml-auto">
+              <span> {{ node.data?.total | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</span>
+              <span class="text-xs text-gray-500">
+                {{ node.data?.percentual / 100 | percent: '1.0-1' }}</span
+              >
+            </div>
+          } @else {
+            <div class="flex flex-column align-items-end ml-auto">
+              <span> {{ node.data?.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</span>
+            </div>
+          }
+        </div>
+        <p-divider class="p-0 m-0" />
+
+        @if (node.expanded && node.children?.length) {
+          <div class="pl-4 mb-5 mt-2">
+            <ng-container
+              *ngTemplateOutlet="
+                treeTemplate;
+                context: { $implicit: node.children, level: level + 1 }
+              "
+            >
+            </ng-container>
+          </div>
+        }
+      </div>
+    </ng-container>
+  </ng-template>
+}

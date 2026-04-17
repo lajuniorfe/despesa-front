@@ -1,15 +1,15 @@
-import { CategoriaResponse } from './../../models/categoria-response.model';
-import { CategoriaService } from './../../services/categoria.service';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { TreeNode } from 'primeng/api';
+import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { ScrollerModule } from 'primeng/scroller';
 import { TreeModule } from 'primeng/tree';
 import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
-import { ScrollerModule } from 'primeng/scroller';
-import { Button } from 'primeng/button';
-import { EditarCategoriaComponent } from '../editar-categoria/editar-categoria.component';
 import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import { TipoCategoriaUtilService } from '../../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
+import { EditarCategoriaComponent } from '../editar-categoria/editar-categoria.component';
+import { CategoriaResponse } from './../../models/categoria-response.model';
+import { CategoriaService } from './../../services/categoria.service';
 
 @Component({
   selector: 'app-gerenciar-categorias',
@@ -77,6 +77,7 @@ export class GerenciarCategoriasComponent {
       id: Number(item.key),
       nome: item.label,
       tipo: item.parent.data.tipo,
+      icone: '',
     };
 
     this.categoriaSelecionada = response;

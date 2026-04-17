@@ -1,4 +1,4 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -10,10 +10,21 @@ import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
 import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
 import { CategoriaResponse } from '../../categorias/models/categoria-response.model';
 import { DespesaRelacionamentoResponse } from '../../despesas/models/retorno-despesa.model';
+import { GraficoRelatorioComponent } from '../grafico-relatorio.component/grafico-relatorio.component';
+import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/relatorio-categoria.component';
 
 @Component({
   selector: 'app-relatorio-despesa.component',
-  imports: [CardModule, DividerModule, TreeModule, ButtonModule, ChartModule, CommonModule],
+  imports: [
+    CardModule,
+    DividerModule,
+    TreeModule,
+    ButtonModule,
+    ChartModule,
+    CommonModule,
+    GraficoRelatorioComponent,
+    RelatorioCategoriaComponent,
+  ],
   templateUrl: './relatorio-despesa.component.html',
   styleUrl: './relatorio-despesa.component.css',
 })
@@ -25,7 +36,9 @@ export class RelatorioDespesaComponent {
   data: any | null = null;
   options: any | null = null;
   platformId = inject(PLATFORM_ID);
-  graficodeque: string = '';
+  tipoGraficoExbido: string = '';
+  Node: any = null;
+  totalDespesas: number = 0;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -33,6 +46,14 @@ export class RelatorioDespesaComponent {
     this.listaDespesasMesAtual = JSON.parse(sessionStorage.getItem('despesas') || '[]');
 
     if (this.listaDespesasMesAtual) {
+      const total = this.listaDespesasMesAtual.reduce(
+        (acc, l) => acc + Math.round(l.valor * 100),
+        0,
+      );
+
+      const totalFinal = total / 100;
+      this.totalDespesas = totalFinal;
+
       this.atualizarRelatorio();
     }
   }
@@ -40,13 +61,14 @@ export class RelatorioDespesaComponent {
   atualizarRelatorio() {
     const categoriasMapGlobal = new Map<number, CategoriaResponse>();
     const tiposMap = new Map<number, TreeNode>();
-    // 🔥 total geral (para calcular % dos tipos)
-    const totalGeral = this.listaDespesasMesAtual.reduce((acc, l) => acc + l.despesa.valor, 0);
+
+    const totalGeral =
+      this.listaDespesasMesAtual.reduce((acc, l) => acc + Math.round(l.valor * 100), 0) / 100;
 
     this.listaDespesasMesAtual.forEach((l) => {
       const categoria = l.despesa.categoria;
       const tipo = l.despesa.categoria.tipo;
-      const valor = l.despesa.valor;
+      const valor = l.valor;
 
       // guarda categoria única no map global
       if (!categoriasMapGlobal.has(categoria.id)) {
@@ -66,11 +88,30 @@ export class RelatorioDespesaComponent {
       const categoriasMap: Map<number, TreeNode> = tipoNode.data.categoriasMap;
 
       if (!categoriasMap.has(categoria.id)) {
+        let corBotao = '';
+
+        switch (categoria.tipo) {
+          case 1:
+            corBotao = 'bg-blue-500';
+            break;
+          case 2:
+            corBotao = 'bg-green-500';
+            break;
+          case 3:
+            corBotao = 'bg-yellow-500';
+            break;
+          case 4:
+            corBotao = 'bg-red-500';
+            break;
+        }
+
         const categoriaNode: TreeNode = {
           label: `${categoria.nome}`,
           children: [],
           data: { total: 0, percentual: 0 },
           parent: tipoNode,
+          icon: categoria.icone,
+          styleClass: corBotao,
         };
         categoriasMap.set(categoria.id, categoriaNode);
         tipoNode.children!.push(categoriaNode);
@@ -96,123 +137,51 @@ export class RelatorioDespesaComponent {
 
     this.categorias = Array.from(categoriasMapGlobal.values());
     this.arvores = Array.from(tiposMap.values());
+    this.calcularPercentuais(this.arvores, totalGeral);
 
-    this.arvores.forEach((tipoNode) => {
-      const totalTipo = tipoNode.data.total;
+    // this.arvores.forEach((tipoNode) => {
+    //   const totalTipo = tipoNode.data.total;
 
-      // % do tipo em relação ao total geral
-      tipoNode.data.percentual = totalGeral > 0 ? (totalTipo / totalGeral) * 100 : 0;
+    //tipoNode.data.percentual = this.calcularPercentual(totalGeral, totalTipo);
 
-      // % das categorias em relação ao tipo
-      tipoNode.children?.forEach((categoriaNode: any) => {
-        const totalCategoria = categoriaNode.data.total;
-
-        categoriaNode.data.percentual = totalTipo > 0 ? (totalCategoria / totalTipo) * 100 : 0;
-      });
-    });
+    //   tipoNode.children?.forEach((categoriaNode: any) => {
+    //     const totalCategoria = categoriaNode.data.total;
+    //     categoriaNode.data.percentual = this.calcularPercentual(totalCategoria, totalTipo);
+    //   });
+    // });
 
     const tipoInicial = this.arvores.find((t) => t.data?.tipo === 1);
 
     if (tipoInicial) {
-      this.iniciarGrafico({ node: tipoInicial });
+      this.tipoGraficoExbido = 'Essêncial';
+
+      this.Node = tipoInicial;
     }
   }
 
-  selecionado(event: any) {
-    console.log('evento recebido', event);
-    const texto = event.node.label.split('----------')[0].trim();
-    const tipoSelecionado = this.encontrarTipo(event.node);
-    let textoEnum = TipoCategoriaUtilService.normalizarParaEnum(texto);
+  selecionado(node: any) {
+    this.Node = node;
+  }
 
-    if (!(textoEnum in TipoCategoriaEnum)) return;
+  toggle(node: any) {
+    this.selecionado(node);
+    node.expanded = !node.expanded;
+  }
 
-    setTimeout(() => {
-      this.arvores?.forEach((n) => {
-        n.expanded = n === tipoSelecionado;
+  calcularPercentual(totalGeral: number, totalTipo: number): number {
+    return totalGeral > 0 ? (totalTipo / totalGeral) * 100 : 0;
+  }
+
+  calcularPercentuais(arvores: TreeNode<any>[] | null, totalGeral: number) {
+    arvores?.forEach((tipoNode) => {
+      const totalTipo = tipoNode.data.total;
+
+      tipoNode.data.percentual = this.calcularPercentual(totalGeral, totalTipo);
+
+      tipoNode.children?.forEach((categoriaNode: any) => {
+        const totalCategoria = categoriaNode.data.total;
+        categoriaNode.data.percentual = this.calcularPercentual(totalTipo, totalCategoria);
       });
-
-      this.arvores = [...this.arvores!];
     });
-
-    this.iniciarGrafico(event);
-    this.graficodeque = texto;
-  }
-
-  iniciarGrafico(evento?: any) {
-    if (!evento) return;
-
-    if (isPlatformBrowser(this.platformId)) {
-      const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue('--text-color');
-
-      const categorias = evento.node.children || [];
-
-      const labels = categorias.map((c: any) => c.label.split('----------')[0].trim());
-
-      const totalTipo = evento.node.data.total;
-
-      const valoresPercentual = categorias.map((c: any) => {
-        const valor = c.data.total;
-        return totalTipo > 0 ? Number(((valor / totalTipo) * 100).toFixed(2)) : 0;
-      });
-
-      const cores = [
-        '--p-cyan-500',
-        '--p-orange-500',
-        '--p-green-500',
-        '--p-purple-500',
-        '--p-pink-500',
-        '--p-blue-500',
-        '--p-yellow-500',
-        '--p-indigo-500',
-        '--p-teal-500',
-        '--p-red-500',
-      ];
-
-      const backgroundColor = labels.map((_: any, i: number) =>
-        documentStyle.getPropertyValue(cores[i % cores.length]),
-      );
-
-      this.data = {
-        labels: labels,
-        datasets: [
-          {
-            data: valoresPercentual,
-            backgroundColor: backgroundColor,
-            hoverBackgroundColor: backgroundColor,
-          },
-        ],
-      };
-      this.options = {
-        plugins: {
-          legend: {
-            labels: {
-              usePointStyle: true,
-              color: textColor,
-            },
-          },
-          tooltip: {
-            callbacks: {
-              label: (context: any) => {
-                return context.label + ': ' + context.raw + '%';
-              },
-            },
-          },
-        },
-      };
-      this.cd.markForCheck();
-    }
-  }
-
-  encontrarTipo(nodeSelecionado: TreeNode): TreeNode | undefined {
-    return this.arvores?.find((tipo) => this.nodePertence(tipo, nodeSelecionado));
-  }
-
-  nodePertence(pai: TreeNode, filho: TreeNode): boolean {
-    if (pai === filho) return true;
-
-    if (!pai.children) return false;
-
-    return pai.children.some((c) => this.nodePertence(c, filho));
   }
 }

@@ -4,4 +4,5 @@ export interface CategoriaResponse {
   id: number;
   nome: string;
   tipo: TipoCategoriaEnum;
+  icone: string;
 }
