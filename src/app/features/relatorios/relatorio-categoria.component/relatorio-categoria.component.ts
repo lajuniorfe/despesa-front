@@ -4,6 +4,7 @@ import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
+import { CorCategoriaService } from '../../../shared/services/utils/cor-categoria/cor-categoria.service';
 import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
 
 @Component({
@@ -16,40 +17,38 @@ export class RelatorioCategoriaComponent {
   @Input() arvores: TreeNode[] | null = null;
   @Input() tipoGraficoExbido: string = '';
   @Output() iniciarGraficoEmit = new EventEmitter<any>();
+  selectedNode: any = null;
 
-  toggle(node: any) {
-    this.selecionado(node);
-    node.expanded = !node.expanded;
+  constructor(private corService: CorCategoriaService) {}
+
+  ngOnInit() {
+    if (this.arvores) {
+      console.log('arvores', this.arvores);
+      this.selectedNode = this.arvores[0];
+      this.selectedNode.expanded = true;
+    }
   }
 
   selecionado(node: any) {
     const texto = node.label.split('----------')[0].trim();
-    const tipoSelecionado = this.encontrarTipo(node);
     let textoEnum = TipoCategoriaUtilService.normalizarParaEnum(texto);
 
     if (!(textoEnum in TipoCategoriaEnum)) return;
-
-    setTimeout(() => {
-      this.arvores?.forEach((n) => {
-        n.expanded = n === tipoSelecionado;
-      });
-
-      this.arvores = [...this.arvores!];
-    });
 
     this.iniciarGraficoEmit.emit(node);
     this.tipoGraficoExbido = texto;
   }
 
-  encontrarTipo(nodeSelecionado: TreeNode): TreeNode | undefined {
-    return this.arvores?.find((tipo) => this.nodePertence(tipo, nodeSelecionado));
+  getClasseCor(node: any): string {
+    const label = node.label.split('----------')[0].trim();
+    return this.corService.getClasse(label);
   }
 
-  nodePertence(pai: TreeNode, filho: TreeNode): boolean {
-    if (pai === filho) return true;
-
-    if (!pai.children) return false;
-
-    return pai.children.some((c) => this.nodePertence(c, filho));
+  selecionarNode(node: any, level: number) {
+    if (level === 0) {
+      this.selectedNode = this.selectedNode === node ? null : node;
+    }
+    this.selecionado(node);
+    node.expanded = !node.expanded;
   }
 }

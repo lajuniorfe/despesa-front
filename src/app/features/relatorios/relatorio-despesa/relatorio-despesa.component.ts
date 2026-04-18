@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
+import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TreeModule } from 'primeng/tree';
 import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
+import { TokenService } from '../../../shared/services/token/token.service';
 import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
 import { CategoriaResponse } from '../../categorias/models/categoria-response.model';
 import { DespesaRelacionamentoResponse } from '../../despesas/models/retorno-despesa.model';
@@ -24,6 +27,8 @@ import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/re
     CommonModule,
     GraficoRelatorioComponent,
     RelatorioCategoriaComponent,
+    FormsModule,
+    ToggleButtonModule,
   ],
   templateUrl: './relatorio-despesa.component.html',
   styleUrl: './relatorio-despesa.component.css',
@@ -31,6 +36,7 @@ import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/re
 export class RelatorioDespesaComponent {
   mesAtual = 'Maio';
   listaDespesasMesAtual!: DespesaRelacionamentoResponse[];
+  listaDespesasOriginal!: DespesaRelacionamentoResponse[];
   categorias: CategoriaResponse[] = [];
   arvores: TreeNode[] | null = null;
   data: any | null = null;
@@ -39,13 +45,22 @@ export class RelatorioDespesaComponent {
   tipoGraficoExbido: string = '';
   Node: any = null;
   totalDespesas: number = 0;
+  coresCategorias: string = '';
+  checarDespesaUsuario: boolean = false;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private readonly tokenService: TokenService) {}
 
   ngOnInit() {
-    this.listaDespesasMesAtual = JSON.parse(sessionStorage.getItem('despesas') || '[]');
+    this.listaDespesasOriginal = JSON.parse(sessionStorage.getItem('despesas') || '[]');
+    this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
 
     if (this.listaDespesasMesAtual) {
+      this.listaDespesasMesAtual = this.checarDespesaUsuario
+        ? this.listaDespesasOriginal.filter(
+            (d) => d.despesa.usuario.id === this.tokenService.obterUsuarioLogado().id,
+          )
+        : this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1);
+
       const total = this.listaDespesasMesAtual.reduce(
         (acc, l) => acc + Math.round(l.valor * 100),
         0,
@@ -70,7 +85,12 @@ export class RelatorioDespesaComponent {
       const tipo = l.despesa.categoria.tipo;
       const valor = l.valor;
 
-      // guarda categoria única no map global
+      this.listaDespesasMesAtual = this.checarDespesaUsuario
+        ? this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1)
+        : this.listaDespesasOriginal.filter(
+            (d) => d.despesa.usuario.id === this.tokenService.obterUsuarioLogado().id,
+          );
+
       if (!categoriasMapGlobal.has(categoria.id)) {
         categoriasMapGlobal.set(categoria.id, categoria);
       }
@@ -119,18 +139,15 @@ export class RelatorioDespesaComponent {
 
       const categoriaNode = categoriasMap.get(categoria.id)!;
 
-      // adiciona a despesa dentro da categoria
       categoriaNode.children!.push({
         label: `${l.despesa.descricao}`,
-        data: l.despesa,
+        data: l,
         parent: categoriaNode,
       });
 
-      // soma o valor no total da categoria
       categoriaNode.data.total += valor;
       categoriaNode.label = `${categoria.nome} `;
 
-      // soma o valor no total do tipo
       tipoNode.data.total += valor;
       tipoNode.label = `${TipoCategoriaUtilService.formatar(TipoCategoriaEnum[tipo])}`;
     });
@@ -139,17 +156,6 @@ export class RelatorioDespesaComponent {
     this.arvores = Array.from(tiposMap.values());
     this.calcularPercentuais(this.arvores, totalGeral);
 
-    // this.arvores.forEach((tipoNode) => {
-    //   const totalTipo = tipoNode.data.total;
-
-    //tipoNode.data.percentual = this.calcularPercentual(totalGeral, totalTipo);
-
-    //   tipoNode.children?.forEach((categoriaNode: any) => {
-    //     const totalCategoria = categoriaNode.data.total;
-    //     categoriaNode.data.percentual = this.calcularPercentual(totalCategoria, totalTipo);
-    //   });
-    // });
-
     const tipoInicial = this.arvores.find((t) => t.data?.tipo === 1);
 
     if (tipoInicial) {
@@ -157,6 +163,11 @@ export class RelatorioDespesaComponent {
 
       this.Node = tipoInicial;
     }
+  }
+
+  filtrarDespesaUsuario() {
+    this.checarDespesaUsuario = !this.checarDespesaUsuario;
+    this.atualizarRelatorio();
   }
 
   selecionado(node: any) {

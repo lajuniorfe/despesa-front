@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
+import { CorCategoriaService } from '../../../shared/services/utils/cor-categoria/cor-categoria.service';
 
 @Component({
   selector: 'app-grafico-relatorio',
@@ -22,7 +23,10 @@ export class GraficoRelatorioComponent {
   @Input() tipoGraficoExbido: string = '';
   @Input() node: any | null = null;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(
+    private cd: ChangeDetectorRef,
+    private corService: CorCategoriaService,
+  ) {}
 
   ngOnInit() {
     this.exibirGrafico(this.node);
@@ -49,24 +53,11 @@ export class GraficoRelatorioComponent {
 
       const valoresPercentual = categorias.map((c: any) => {
         const valor = c.data.total;
-        return totalTipo > 0 ? Number(((valor / totalTipo) * 100).toFixed(2)) : 0;
+        return totalTipo > 0 ? Number(((valor / totalTipo) * 100).toFixed(1)) : 0;
       });
 
-      const cores = [
-        '--p-cyan-500',
-        '--p-orange-500',
-        '--p-green-500',
-        '--p-purple-500',
-        '--p-pink-500',
-        '--p-blue-500',
-        '--p-yellow-500',
-        '--p-indigo-500',
-        '--p-teal-500',
-        '--p-red-500',
-      ];
-
-      const backgroundColor = labels.map((_: any, i: number) =>
-        documentStyle.getPropertyValue(cores[i % cores.length]),
+      const backgroundColor = labels.map((label: string) =>
+        documentStyle.getPropertyValue(this.corService.getCorCss(label)),
       );
 
       this.data = {

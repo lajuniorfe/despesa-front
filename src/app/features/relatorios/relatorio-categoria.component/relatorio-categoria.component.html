@@ -6,44 +6,34 @@
 
   <ng-template #treeTemplate let-nodes let-level="level">
     <ng-container *ngFor="let node of nodes">
-      <div class="node">
-        <div class="flex align-items-center w-full py-1">
+      <div>
+        <div
+          class="flex align-items-center w-full py-1 node cursor-pointer"
+          (click)="selecionarNode(node, level)"
+          [ngClass]="{ 'node-selected': selectedNode === node && level === 0 }"
+        >
           <div class="flex align-items-center justify-content-center mr-2">
             @if (level == 0 || level == 1) {
-              <p-button
-                (onClick)="toggle(node)"
-                styleClass="border-0 border-transparent"
-                class="border-0 border-transparent"
-                [rounded]="true"
-                [icon]="
-                  node.data.tipo == 1 && level == 0
-                    ? 'ph ph-money'
-                    : node.data.tipo == 2 && level == 0
-                      ? 'ph ph-coins'
-                      : node.data.tipo == 3 && level == 0
-                        ? 'ph ph-piggy-bank'
-                        : node.data.tipo == 4 && level == 0
-                          ? 'ph ph-warning'
-                          : level == 1
-                            ? node.icon
-                            : ''
-                "
-                [styleClass]="
-                  node.data.tipo == 1
-                    ? 'bg-blue-500'
-                    : node.data.tipo == 2
-                      ? 'bg-green-500'
-                      : node.data.tipo == 3
-                        ? 'bg-yellow-500'
-                        : node.data.tipo == 4
-                          ? 'bg-red-500'
-                          : node.styleClass
-                "
-              />
+              @if (node.data.tipo == 1 && level == 0) {
+                <i class="ph ph-money cursor-pointer border-circle p-2 bg-blue-500 text-white"></i>
+              }
+              @if (node.data.tipo == 2 && level == 0) {
+                <i class="ph ph-coins cursor-pointer border-circle p-2 bg-green-500 text-white"></i>
+              }
+              @if (node.data.tipo == 3 && level == 0) {
+                <i
+                  class="ph ph-piggy-bank cursor-pointer border-circle p-2 bg-yellow-500 text-white"
+                ></i>
+              }
+              @if (node.data.tipo == 4 && level == 0) {
+                <i class="ph ph-warning cursor-pointer border-circle p-2 bg-red-500 text-white"></i>
+              }
             }
           </div>
 
-          <div>{{ node.label }}</div>
+          <div>
+            {{ node.label }}
+          </div>
 
           @if (level == 0 || level == 1) {
             <div class="flex flex-column align-items-end ml-auto">
