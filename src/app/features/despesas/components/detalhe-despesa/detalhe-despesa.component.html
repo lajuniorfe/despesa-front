@@ -1,8 +1,6 @@
 <div class="overlay">
   <div class="modal-wrapper" (click)="$event.stopPropagation()">
     <p-card class="w-full bg-gray-50">
-      <ng-template #title> Cadastro de Despesa </ng-template>
-
       <form [formGroup]="formulario" class="w-full mt-3">
         <div class="flex flex-column mb-5">
           <label class="block mb-1 text-sm font-medium text-gray-600" for="username"
@@ -14,7 +12,7 @@
             id="username"
             pInputText
             autocomplete="off"
-            [disabled]="cadastrando"
+            [
           />
         </div>
 
@@ -28,96 +26,78 @@
               locale="pt-BR"
               class="w-full"
               placeholder="R$ 00,00"
-              [disabled]="cadastrando"
             ></p-inputnumber>
           </div>
           <div class="flex flex-column flex-1">
-            <label class="w-full text-gray-600" for="username">Data</label>
+            <label class="w-full text-gray-600" for="data">Data</label>
             <p-datepicker
               formControlName="data"
               placeholder="dd/mm/yyyy"
               pInputMask="99/99/9999"
               dateFormat="dd/mm/yy"
-              [disabled]="cadastrando"
             />
           </div>
         </div>
 
         <div class="flex gap-2 mb-5 w-full">
           <div class="flex flex-column w-6">
-            <label class="text-gray-600 w-full" for="formaPagamento">Tipo de Pagamento</label>
-            @if (telaPronta) {
-              <p-select
-                [options]="grupoTipoPagamento"
-                formControlName="tipoPagamento"
-                optionLabel="label"
-                placeholder="Selecione o tipo de pagamento"
-                class="w-full"
-                [group]="true"
-                [disabled]="cadastrando"
-              >
-                <ng-template let-group #group>
-                  <div class="flex items-center">
-                    <strong
-                      ><span class="font-bold text-lg">{{ group.label }}</span></strong
-                    >
-                  </div>
-                </ng-template>
+            <label class="text-gray-600 w-full" for="formaPagamento">Cartão</label>
+            <p-select
+              [options]="grupoTipoPagamento"
+              formControlName="tipoPagamento"
+              optionLabel="label"
+              placeholder="Selecione o tipo de pagamento"
+              class="w-full"
+              [group]="true"
+            >
+              <ng-template let-group #group>
+                <div class="flex items-center">
+                  <strong
+                    ><span class="font-bold text-lg">{{ group.label }}</span></strong
+                  >
+                </div>
+              </ng-template>
 
-                <ng-template let-item pTemplate="item">
-                  <div class="flex items-center">
-                    <span class="text-xs font-normal"> {{ item.label }}</span>
-                  </div>
-                </ng-template>
-              </p-select>
-            }
+              <ng-template let-item pTemplate="item">
+                <div class="flex items-center">
+                  <span class="text-xs font-normal"> {{ item.label }}</span>
+                </div>
+              </ng-template>
+            </p-select>
           </div>
           <div class="flex flex-column w-6">
-            <label class="text-gray-600 w-full" for="categoria">Categoria</label>
-            @if (telaPronta) {
-              <p-select
-                [options]="grupoTipoCategoria"
-                formControlName="categoria"
-                optionLabel="label"
-                placeholder="Selecione a categoria"
-                class="w-full"
-                [group]="true"
-                [disabled]="cadastrando"
-              >
-                <ng-template let-group #group>
-                  <div class="flex items-center">
-                    <i class="mr-2" [ngClass]="'pi ' + group.icon"></i>
-                    <strong
-                      ><span class="ml-2 font-bold text-lg"
-                        >{{ formatar(group.label) }}
-                      </span></strong
-                    >
-                  </div>
-                </ng-template>
-              </p-select>
-            }
+            <label class="text-gray-600 w-full" for="formaPagamento">Categoria</label>
+            <p-select
+              [options]="grupoTipoCategoria"
+              formControlName="categoria"
+              optionLabel="label"
+              placeholder="Selecione a categoria"
+              class="w-full"
+              [group]="true"
+            >
+              <ng-template let-group #group>
+                <div class="flex items-center">
+                  <i class="mr-2" [ngClass]="'pi ' + group.icon"></i>
+                  <strong
+                    ><span class="ml-2 font-bold text-lg"
+                      >{{ formatar(group.label) }}
+                    </span></strong
+                  >
+                </div>
+              </ng-template>
+            </p-select>
           </div>
         </div>
 
         @if (recorrente) {
           <div class="card flex flex-column gap-1 items-start mb-4">
             <div class="flex items-center">
-              <p-radiobutton
-                formControlName="recorrencia"
-                name="recorrencia"
-                [value]="1"
-                [disabled]="cadastrando"
-              />
+              <p-radiobutton formControlName="recorrencia" name="recorrencia" [value]="1" />
               <label class="ml-1">é uma despesa fixa</label>
             </div>
 
             <div class="flex items-center">
-              <p-radiobutton
-                formControlName="recorrencia"
-                name="recorrencia"
-                [value]="2"
-                [disabled]="cadastrando"
-              />
+              <p-radiobutton formControlName="recorrencia" name="recorrencia" [value]="2" />
               <label class="ml-1">é um lançamento parcelado em </label>
             </div>
 
@@ -150,9 +130,7 @@
             severity="secondary"
             icon="pi pi-arrow-right-arrow-left"
             (click)="recorrente = !recorrente"
-            [disabled]="cadastrando"
           />
-
           <p-button
             label="Despesa Compartilhada"
             severity="secondary"
@@ -164,31 +142,16 @@
         </div>
 
         <div class="flex gap-2 mx-auto w-fit">
+          <p-button label="Cancelar" variant="text" severity="danger" (onClick)="fecharModal()" />
           <p-button
-            label="Cancelar"
+            label="Alterar"
             variant="text"
-            severity="danger"
-            (onClick)="fecharTela()"
-            [disabled]="cadastrando"
-          />
-          <p-button
-            [rounded]="true"
             icon="pi pi-check"
-            size="large"
-            [loading]="cadastrando"
-            (onClick)="cadastrarDespesaFechando($event)"
-          />
-          <p-button
-            label="Salvar e criar outra"
-            variant="text"
-            severity="success"
-            (onClick)="cadastrarDespesaContinuando()"
-            [disabled]="cadastrando"
+            [disabled]="!formAlterado || formulario.invalid"
+            (onClick)="alterarDespesa()"
           />
         </div>
       </form>
     </p-card>
   </div>
 </div>
-<p-toast />
-<p-confirmpopup appendTo="body" />

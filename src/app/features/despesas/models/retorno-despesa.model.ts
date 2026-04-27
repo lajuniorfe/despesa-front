@@ -2,6 +2,7 @@ import { FaturaResponse } from '../../faturas/models/faturas-response.model';
 import { DespesaResponse } from './despesa-response.model';
 
 export interface DespesaRelacionamentoResponse {
+  id: number;
   numeroParcela: number;
   totalParcela: number;
   valor: number;

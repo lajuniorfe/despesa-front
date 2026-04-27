@@ -3,9 +3,9 @@ import { Component } from '@angular/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import { TokenService } from '../../../../shared/services/token/token.service';
-import { EstadoService } from '../../../../shared/services/utils/estado/estado.service';
 import { CadastroReceitaComponent } from '../../../despesas/components/cadastro-despesa-receita/cadastro-receita.component';
 import { CadastroDespesaComponent } from '../../../despesas/components/cadastro/cadastro-despesa.component';
+import { DetalheDespesaComponent } from '../../../despesas/components/detalhe-despesa/detalhe-despesa.component';
 import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
 import { DespesasService } from '../../../despesas/services/despesas.service';
 import { DetalharFaturasComponent } from '../../../faturas/components/detalhar-faturas/detalhar-faturas.component';
@@ -26,6 +26,7 @@ import { Principal } from '../../components/principal/principal';
     DetalharFaturasComponent,
     CadastroDespesaComponent,
     CadastroReceitaComponent,
+    DetalheDespesaComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.css',
@@ -48,41 +49,36 @@ export class HomeComponent {
   mostrarCadastroReceita: boolean = false;
   saldoIndividualUsuarioLogado: number = 0;
   saldoIndividualUsuarioOffline: number = 0;
-  mesAtual = new Date().getMonth() + 2;
-  anoAtual = new Date().getFullYear();
+  exbirDetalheDespesa: boolean = false;
+  despesaDetalhar!: DespesaRelacionamentoResponse;
 
   constructor(
     private readonly despesaService: DespesasService,
     private loadingService: LoadingService,
     private readonly tokenService: TokenService,
-    private estadoService: EstadoService,
   ) {}
 
   ngOnInit() {
-    this.buscarDespesasMesAtual();
+    const mesAtual = new Date().getMonth() + 1;
+    const anoAtual = new Date().getFullYear();
+
+    this.buscarDespesasMesAtual(mesAtual, anoAtual);
   }
 
-  buscarDespesasMesAtual() {
+  buscarDespesasMesAtual(mesAtual: number, anoAtual: number) {
     this.usuario = this.tokenService.obterUsuarioLogado();
     this.loadingService.show();
 
-    this.despesaService.listarDespesasMesInformado(this.mesAtual, this.anoAtual).subscribe({
+    this.despesaService.listarDespesasMesInformado(mesAtual, anoAtual).subscribe({
       next: (retorno: DespesaRelacionamentoResponse[]) => {
         const listaDespesas = retorno.filter((d) => d.despesa.categoria.tipo !== 5);
         const listaReceitas = retorno.filter((d) => d.despesa.categoria.tipo === 5);
 
-        this.listaDespesaMesAtual = listaDespesas.sort((a, b) => {
-          if (a.despesa.categoria.tipo === 1 && b.despesa.categoria.tipo !== 1) return -1;
-          if (a.despesa.categoria.tipo !== 1 && b.despesa.categoria.tipo === 1) return 1;
-
-          return new Date(a.data).getTime() - new Date(b.data).getTime();
-        });
+        this.listaDespesaMesAtual = listaDespesas;
 
         this.receitasMesAtual = this.calcularReceitaCasal(listaReceitas);
         this.receitaIndividual = this.calcularReceitaIndividual(listaReceitas);
         this.valorTotalDespesasMes = this.calcularValorTotalDespesasUsuario(1);
-
-        // this.estadoService.setInfo(this.listaDespesaMesAtual);
 
         sessionStorage.setItem('despesas', JSON.stringify(this.listaDespesaMesAtual));
 
@@ -169,9 +165,14 @@ export class HomeComponent {
   }
 
   receberDespesaCadastrada(despesa: DespesaRelacionamentoResponse) {
-    if (despesa.data.getMonth() == this.listaDespesaMesAtual[0].data.getMonth()) {
+    const dataDespesa = new Date(despesa.data);
+    const dataLista = new Date(this.listaDespesaMesAtual[0].data);
+
+    if (dataDespesa.getMonth() === dataLista.getMonth()) {
       this.listaDespesaMesAtual = [...this.listaDespesaMesAtual, despesa];
+
       this.agruparDespesasFaturaCartao();
+      sessionStorage.setItem('despesas', JSON.stringify(this.listaDespesaMesAtual));
     }
 
     if (despesa.despesa.usuario.id === 1) {
@@ -192,8 +193,13 @@ export class HomeComponent {
     this.faturaRecebida = faturaRecebida;
   }
 
+  abrirDetalheDespesa(despesaRecebida: DespesaRelacionamentoResponse) {
+    this.despesaDetalhar = despesaRecebida;
+    this.exbirDetalheDespesa = true;
+  }
+
   receberReceitaCadastrada(despesa: any) {
-    console.log(despesa);
+    //console.log('recebi', despesa);
   }
 
   cadastrarDespesa() {
@@ -229,5 +235,15 @@ export class HomeComponent {
       SaldoConjunto,
       despesaUsuarioOffLine,
     );
+  }
+
+  dataBuscarDespesa(dataRecebida: Date) {
+    const mesAtual = dataRecebida.getMonth() + 1;
+    const anoAtual = dataRecebida.getFullYear();
+    this.buscarDespesasMesAtual(mesAtual, anoAtual);
+  }
+
+  fecharDetalheDespesa() {
+    this.exbirDetalheDespesa = false;
   }
 }

@@ -1,36 +1,30 @@
-import { Component, EventEmitter, inject, Input, NgZone, Output } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { LoadingService } from '../../../../shared/services/loading/loading.service';
-import { TokenService } from '../../../../shared/services/token/token.service';
-import { CartaoService } from '../../../cartoes/services/cartao.service';
-import { CategoriaService } from '../../../categorias/services/categoria.service';
-import { TipoPagamentoService } from '../../../tipo-pagamentos/services/tipo-pagamento.service';
-import { DespesasService } from '../../services/despesas.service';
-import { CartaoResponse } from '../../../cartoes/models/cartao-response.model';
-import { CategoriaResponse } from '../../../categorias/models/categoria-response.model';
-import { TipoPagamentoResponse } from '../../../tipo-pagamentos/models/tipo-pagamento-response.model';
-import { DespesaRequest } from '../../models/despesa-request.model';
-import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
-import { finalize, forkJoin, Observable, switchMap } from 'rxjs';
+import { CurrencyPipe, NgClass } from '@angular/common';
+import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { DatePicker } from 'primeng/datepicker';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { RadioButton } from 'primeng/radiobutton';
 import { Select } from 'primeng/select';
-import { DatePicker } from 'primeng/datepicker';
-import { CurrencyPipe, NgClass } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { TipoCategoriaUtilService } from '../../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
-import { DespesaRelacionamentoResponse } from '../../models/retorno-despesa.model';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ToastModule } from 'primeng/toast';
+import { finalize, forkJoin, Observable, switchMap } from 'rxjs';
+import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { TokenService } from '../../../../shared/services/token/token.service';
+import { TipoCategoriaUtilService } from '../../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
+import { CartaoResponse } from '../../../cartoes/models/cartao-response.model';
+import { CartaoService } from '../../../cartoes/services/cartao.service';
+import { CategoriaResponse } from '../../../categorias/models/categoria-response.model';
+import { CategoriaService } from '../../../categorias/services/categoria.service';
+import { TipoPagamentoResponse } from '../../../tipo-pagamentos/models/tipo-pagamento-response.model';
+import { TipoPagamentoService } from '../../../tipo-pagamentos/services/tipo-pagamento.service';
+import { DespesaRequest } from '../../models/despesa-request.model';
+import { DespesaRelacionamentoResponse } from '../../models/retorno-despesa.model';
+import { DespesasService } from '../../services/despesas.service';
 
 @Component({
   selector: 'app-cadastro-despesa',
@@ -53,7 +47,8 @@ import { ToastModule } from 'primeng/toast';
   providers: [ConfirmationService, MessageService],
 })
 export class CadastroDespesaComponent {
-  @Output() fecharTelaEmitter = new EventEmitter();
+  @Output()
+  fecharTelaEmitter = new EventEmitter();
   @Output() retornarDespesaCadastradaEmitter = new EventEmitter<DespesaRelacionamentoResponse>();
   @Input() saldoIndividualUsuarioLogado: number = 0;
   @Input() saldoIndividualUsuarioOffline: number = 0;
@@ -84,6 +79,11 @@ export class CadastroDespesaComponent {
     private readonly tokenService: TokenService,
     private loadingService: LoadingService,
   ) {}
+
+  @HostListener('document:keydown.escape')
+  onEscPressed() {
+    this.fecharTela();
+  }
 
   ngOnInit() {
     this.criarFormulario();
@@ -126,6 +126,11 @@ export class CadastroDespesaComponent {
         },
         error: () => {
           this.formulario.reset();
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Erro ao Cadastrar Despesa',
+          });
         },
       });
   }

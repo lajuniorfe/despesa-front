@@ -1,9 +1,15 @@
 <article class="flex flex-column align-items-center gap-3 mt-5">
   <div class="w-full md:w-10">
-    <app-principal [valorDespesasConjuntasMesAtual]="valorTotalDespesasMes"
-      [valorDespesasIndividuaisMesAtual]="valorTotalDespesasIndividuais" [saldoIndividual]="saldoIndividual"
-      [receitasMesAtual]="receitasMesAtual" [receitaIndividual]="receitaIndividual"
-      (cadastrarReceitaEmitt)="cadastrarReceita()" (cadastrarDespesaEmit)="cadastrarDespesa()"></app-principal>
+    <app-principal
+      [valorDespesasConjuntasMesAtual]="valorTotalDespesasMes"
+      [valorDespesasIndividuaisMesAtual]="valorTotalDespesasIndividuais"
+      [saldoIndividual]="saldoIndividual"
+      [receitasMesAtual]="receitasMesAtual"
+      [receitaIndividual]="receitaIndividual"
+      (cadastrarReceitaEmitt)="cadastrarReceita()"
+      (cadastrarDespesaEmit)="cadastrarDespesa()"
+      (dataEscolhidaEmitt)="dataBuscarDespesa($event)"
+    ></app-principal>
   </div>
 
   <div class="w-full md:w-10">
@@ -13,26 +19,42 @@
       </div>
 
       <div class="col-12 md:col-6 p-1">
-        <app-exibir-cartoes [listaAgrupadas]="listaAgrupada"
-          (detalharFaturasEmittir)="detalharFatura($event)"></app-exibir-cartoes>
+        <app-exibir-cartoes
+          [listaAgrupadas]="listaAgrupada"
+          (detalharFaturasEmittir)="detalharFatura($event)"
+        ></app-exibir-cartoes>
       </div>
     </div>
   </div>
 </article>
 
-@if(exibirDetalheFatura){
-<app-detalhar-faturas [detalheFaturaAtual]="faturaRecebida"
-  (fecharTelaEmitir)="exibirDetalheFatura = !exibirDetalheFatura"></app-detalhar-faturas>
+@if (exibirDetalheFatura) {
+  <app-detalhar-faturas
+    [detalheFaturaAtual]="faturaRecebida"
+    (fecharTelaEmitir)="exibirDetalheFatura = !exibirDetalheFatura"
+    (abrirDetalhesDespesaEmitir)="abrirDetalheDespesa($event)"
+  ></app-detalhar-faturas>
 }
 
 @if (mostrarCadastroDespesa) {
-<app-cadastro-despesa (fecharTelaEmitter)="fecharCadastro()"
-  (retornarDespesaCadastradaEmitter)=receberDespesaCadastrada($event)
-  [saldoIndividualUsuarioLogado]="saldoIndividualUsuarioLogado"
-  [saldoIndividualUsuarioOffline]="saldoIndividualUsuarioOffline"></app-cadastro-despesa>
+  <app-cadastro-despesa
+    (fecharTelaEmitter)="fecharCadastro()"
+    (retornarDespesaCadastradaEmitter)="receberDespesaCadastrada($event)"
+    [saldoIndividualUsuarioLogado]="saldoIndividualUsuarioLogado"
+    [saldoIndividualUsuarioOffline]="saldoIndividualUsuarioOffline"
+  ></app-cadastro-despesa>
 }
 
-@if(mostrarCadastroReceita){
-<app-cadastro-receita (fecharTelaEmitter)="fecharCadastroReceita()"
-  (receberReceitaCadastrada)=receberReceitaCadastrada($event)></app-cadastro-receita>
+@if (mostrarCadastroReceita) {
+  <app-cadastro-receita
+    (fecharTelaEmitter)="fecharCadastroReceita()"
+    (receberReceitaCadastrada)="receberReceitaCadastrada($event)"
+  ></app-cadastro-receita>
+}
+
+@if (exbirDetalheDespesa) {
+  <app-detalhe-despesa
+    [despesaRecebida]="despesaDetalhar"
+    (fecharTelaEmitir)="fecharDetalheDespesa()"
+  ></app-detalhe-despesa>
 }

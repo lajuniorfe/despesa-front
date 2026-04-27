@@ -1,8 +1,9 @@
-import { DespesaRequest } from './../models/despesa-request.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AlterarDespesaRequest } from '../models/despesa-request-alterar.model';
 import { DespesaRelacionamentoResponse } from '../models/retorno-despesa.model';
+import { DespesaRequest } from './../models/despesa-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,11 @@ export class DespesasService {
 
   obterDespesaPorId(id: number): Observable<DespesaRelacionamentoResponse> {
     return this.http.get<DespesaRelacionamentoResponse>(`${this.caminho}/${id}`);
+  }
+
+  alterarDespesa(request: AlterarDespesaRequest) {
+    return this.http.put<DespesaRelacionamentoResponse>(`${this.caminho}`, request, {
+      headers: this.headers,
+    });
   }
 }

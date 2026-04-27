@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InformacaoFaturasAgrupadas } from '../../models/informacao-faturas-agrupada.model';
-import { TableModule } from 'primeng/table';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { TableModule } from 'primeng/table';
 import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
 import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
+import { InformacaoFaturasAgrupadas } from '../../models/informacao-faturas-agrupada.model';
 
 @Component({
   selector: 'app-detalhar-faturas',
@@ -27,7 +27,9 @@ import { InputTextModule } from 'primeng/inputtext';
 export class DetalharFaturasComponent {
   @Input() detalheFaturaAtual!: InformacaoFaturasAgrupadas;
   @Output() fecharTelaEmitir = new EventEmitter();
+  @Output() abrirDetalhesDespesaEmitir = new EventEmitter<any>();
 
+  selectedProduct!: DespesaRelacionamentoResponse;
   mesFatura: string = '';
   tipoCategoriaEnum = TipoCategoriaEnum;
   listaDespesas: DespesaRelacionamentoResponse[] = [];
@@ -54,5 +56,9 @@ export class DetalharFaturasComponent {
 
   fecharTela() {
     this.fecharTelaEmitir.emit();
+  }
+
+  onRowSelect(event: any) {
+    this.abrirDetalhesDespesaEmitir.emit(event.data);
   }
 }
