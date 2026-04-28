@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
+import { Tabs, TabsModule } from 'primeng/tabs';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TreeModule } from 'primeng/tree';
 import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
@@ -29,6 +30,8 @@ import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/re
     RelatorioCategoriaComponent,
     FormsModule,
     ToggleButtonModule,
+    Tabs,
+    TabsModule,
   ],
   templateUrl: './relatorio-despesa.component.html',
   styleUrl: './relatorio-despesa.component.css',

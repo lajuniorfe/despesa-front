@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { SpeedDialModule } from 'primeng/speeddial';
@@ -7,7 +7,7 @@ import { Toolbar, ToolbarModule } from 'primeng/toolbar';
 
 @Component({
   selector: 'app-header',
-  imports: [Toolbar, RouterLink, ToolbarModule, Button, SpeedDialModule],
+  imports: [Toolbar, RouterLink, ToolbarModule, Button, SpeedDialModule, RouterModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
 })

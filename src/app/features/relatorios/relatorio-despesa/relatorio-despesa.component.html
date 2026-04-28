@@ -7,7 +7,89 @@
     </div>
 
     <p-divider class="mb-1 mt-1"></p-divider>
-    <div class="flex justify-content-center flex-wrap">
+    <p-tabs value="0">
+      <div class="flex justify-content-center flex-wrap">
+        <p-tablist>
+          <p-tab value="0">Categorias</p-tab>
+          <p-tab value="1">Limites de Gastos</p-tab>
+          <p-tab value="2">Visualização de Investimentos</p-tab>
+        </p-tablist>
+      </div>
+
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <div class="flex justify-content-start flex-wrap mb-0 pb-0">
+            <div class="flex align-items-center justify-content-center font-bold border-round m-0">
+              <h3>Categorias</h3>
+            </div>
+
+            <div class="flex align-items-center justify-content-center ml-6">
+              <p-button label="Filtrar" icon="pi pi-filter" />
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-content-start flex-wrap mb-0 pb-0">
+              <div
+                class="flex align-items-center justify-content-center font-bold border-round m-0"
+              >
+                <h3>Despesas</h3>
+              </div>
+              <div class="flex align-items-center justify-content-center ml-6">
+                <p-togglebutton
+                  onLabel="Individual"
+                  offLabel="Conjuntas"
+                  (onChange)="filtrarDespesaUsuario()"
+                  class="w-24"
+                />
+              </div>
+            </div>
+
+            <div class="grid">
+              <div class="col-6">
+                @if (arvores?.length) {
+                  <app-relatorio-categoria
+                    [arvores]="arvores"
+                    [tipoGraficoExbido]="tipoGraficoExbido"
+                    (iniciarGraficoEmit)="selecionado($event)"
+                  ></app-relatorio-categoria>
+                }
+                <p class="flex justify-content-end">
+                  Total de despesas:
+                  {{ totalDespesas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                </p>
+              </div>
+              <div class="col-6">
+                <app-grafico-relatorio
+                  [data]="data"
+                  [options]="options"
+                  [tipoGraficoExbido]="tipoGraficoExbido"
+                  [node]="Node"
+                ></app-grafico-relatorio>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+        <p-tabpanel value="1">
+          <p>Receita: 13250</p>
+          <p>Destinado para gastos Essênciais: 6.625 - 50%</p>
+          <p>Destinado para gastos Não Essênciais: 3.975 - 30%</p>
+          <p>Destinado para Investimentos: 2.650 - 20%</p>
+
+          <p>
+            Exibindo em grafico de barras com um informativo de onde ate onde deveria gastar, vou
+            mostrar o total de gastos essêncial, não essêncial e investimentos
+          </p>
+        </p-tabpanel>
+        <p-tabpanel value="2">
+          <p class="m-0">
+            Exibindo em um gráfico de linha, vou listar todos os gastos de investimento de todos os
+            meses e dar a opção de atualizar o valor para que ele fique real
+          </p>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+
+    <!-- <div class="flex justify-content-center flex-wrap">
       <div class="flex align-items-center justify-content-center font-bold border-round m-2">
         Categorias
       </div>
@@ -17,19 +99,19 @@
       <div class="flex align-items-center justify-content-center font-bold border-round m-2">
         Algo
       </div>
-    </div>
+    </div> -->
     <p-divider class="mt-1"></p-divider>
 
-    <div class="flex justify-content-start flex-wrap mb-0 pb-0">
+    <!-- <div class="flex justify-content-start flex-wrap mb-0 pb-0">
       <div class="flex align-items-center justify-content-center font-bold border-round m-0">
         <h3>Categorias</h3>
       </div>
       <div class="flex align-items-center justify-content-center ml-6">
         <p-button label="Filtrar" icon="pi pi-filter" />
       </div>
-    </div>
+    </div> -->
 
-    <div>
+    <!-- <div>
       <div class="flex justify-content-start flex-wrap mb-0 pb-0">
         <div class="flex align-items-center justify-content-center font-bold border-round m-0">
           <h3>Despesas</h3>
@@ -67,6 +149,6 @@
           ></app-grafico-relatorio>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </p-card>
