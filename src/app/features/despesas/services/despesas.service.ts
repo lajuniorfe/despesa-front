@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { AlterarDespesaRequest } from '../models/despesa-request-alterar.model';
 import { DespesaRelacionamentoResponse } from '../models/retorno-despesa.model';
 import { DespesaRequest } from './../models/despesa-request.model';
@@ -9,7 +10,7 @@ import { DespesaRequest } from './../models/despesa-request.model';
   providedIn: 'root',
 })
 export class DespesasService {
-  caminho = 'https://localhost:7104/api/despesa';
+  caminho = environment.serverUrl + 'despesa';
   headers = { 'Content-Type': 'application/json' };
   constructor(private http: HttpClient) {}
 

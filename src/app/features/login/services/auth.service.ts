@@ -1,14 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AutenticarRequest } from '../models/autenticar-request.model';
 import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { AutenticarRequest } from '../models/autenticar-request.model';
 import { AutenticarResponse } from '../models/autenticar-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private caminho = 'https://localhost:7104/api/auth';
+  private caminho = environment.serverUrl + 'auth';
+
   private headers = { 'Content-Type': 'application/json' };
   constructor(private http: HttpClient) {}
 

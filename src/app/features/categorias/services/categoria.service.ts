@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CategoriaResponse } from '../models/categoria-response.model';
+import { environment } from '../../../../environments/environment';
 import { CategoriaRequest } from '../models/categoria-request.model';
+import { CategoriaResponse } from '../models/categoria-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CategoriaService {
-  private caminho = 'https://localhost:7104/api/categoria';
+  private caminho = environment.serverUrl + 'categoria';
+
   private headers = { 'Content-Type': 'application/json' };
 
   constructor(private http: HttpClient) {}
