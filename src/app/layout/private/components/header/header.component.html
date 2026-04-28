@@ -1,24 +1,32 @@
 <p-toolbar>
   <ng-template pTemplate="start">
     <div class="flex align-itens-center gap-3">
-      <span class="text-xl font-bold text-primary  cursor-pointer flex align-itens-center" routerLink="/">
+      <span
+        class="text-xl font-bold text-primary cursor-pointer flex align-itens-center"
+        routerLink="/"
+      >
         Financeiro
       </span>
 
       <div class="flex align-itens-center gap-3 ml-3">
-        <a routerLink="/" class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
+        <a
+          routerLink="/"
+          class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors"
+        >
           Visão geral
         </a>
-
-        <a routerLink="/" class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
-          Lançamentos
-        </a>
-
-        <a routerLink="relatorios"
-          class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors">
+        <a
+          routerLink="relatorios"
+          class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors"
+        >
           Relatórios
         </a>
-
+        <a
+          routerLink="/"
+          class="mt-1 no-underline text-color font-medium hover:text-primary transition-colors"
+        >
+          Lista de Desejos
+        </a>
       </div>
     </div>
   </ng-template>
@@ -26,8 +34,22 @@
   <ng-template pTemplate="end">
     <div class="flex align-itens-center gap-3">
       <p-button icon="pi pi-bell" [text]="true"></p-button>
-      <p-button icon="pi pi-user" [text]="true"></p-button>
-
+      <p-speeddial [model]="items" direction="down" [transitionDelay]="80">
+        <ng-template #button let-toggleCallback="toggleCallback">
+          <p-button icon="pi pi-user" outlined (click)="toggleCallback($event)"> </p-button>
+        </ng-template>
+        <ng-template #item let-item let-toggleCallback="toggleCallback">
+          <div
+            class="flex flex-col items-center justify-between gap-2 p-2 cursor-pointer"
+            (click)="toggleCallback($event, item)"
+          >
+            <span [class]="item.icon"></span>
+            <span>
+              {{ item.label }}
+            </span>
+          </div>
+        </ng-template>
+      </p-speeddial>
     </div>
   </ng-template>
 </p-toolbar>
