@@ -1,7 +1,27 @@
 @if (mostrarCategorias) {
   <app-gerenciar-categorias (fecharTelaEmitter)="fecharCategorias()"></app-gerenciar-categorias>
 }
-
+<div class="flex justify-content-center flex-wrap">
+  <div class="flex align-items-center justify-content-center font-bold border-round">
+    <p-button
+      icon="pi pi-chevron-left"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="buscarDespesaMesAnterior()"
+    />
+  </div>
+  <div class="flex align-items-center justify-content-center font-bold border-round">
+    {{ mesDespesas }}
+  </div>
+  <div class="flex align-items-center justify-content-center font-bold border-round">
+    <p-button
+      icon="pi pi-chevron-right"
+      [rounded]="true"
+      [text]="true"
+      (onClick)="buscarDespesaMesFuturo()"
+    />
+  </div>
+</div>
 <div class="card w-full p-4 bg-blue-50">
   <div class="grid align-items-center">
     <div class="col-12 md:col-6">
@@ -10,29 +30,6 @@
           <span class="text-color-secondary">Boa tarde</span>
           <h2 class="m-0 font-semibold">Olá, {{ usuario.nome }}</h2>
         </div>
-
-        <div class="flex justify-content-center flex-wrap">
-          <div class="flex align-items-center justify-content-center font-bold border-round">
-            <p-button
-              icon="pi pi-chevron-left"
-              [rounded]="true"
-              [text]="true"
-              (onClick)="buscarDespesaMesAnterior()"
-            />
-          </div>
-          <div class="flex align-items-center justify-content-center font-bold border-round">
-            {{ mesDespesas }}
-          </div>
-          <div class="flex align-items-center justify-content-center font-bold border-round">
-            <p-button
-              icon="pi pi-chevron-right"
-              [rounded]="true"
-              [text]="true"
-              (onClick)="buscarDespesaMesFuturo()"
-            />
-          </div>
-        </div>
-        <div></div>
       </div>
 
       <div class="flex align-items-center gap-4">
