@@ -84,8 +84,7 @@
             <h3 class="text-red-600">
               {{ porcentagemUsoRenda | number: '1.1-1' }}% da sua renda foi destinada a despesas,
               totalizando: {{ total / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} e
-              {{ textoSaldo }}
-              {{ receita - total / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}.
+              restando {{ receita - total / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}.
             </h3>
           </div>
 
@@ -142,7 +141,7 @@
           </div>
 
           <div class="mb-3">
-            <div class="flex justify-content-start flex-wrap gap-4">
+            <div class="flex justify-content-start flex-wrap md:gap-4">
               <div class="flex align-items-center justify-content-center">
                 <h4 class="m-0">Investimento:</h4>
               </div>

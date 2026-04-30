@@ -255,12 +255,4 @@ export class RelatorioDespesaComponent {
   get porcentagemUsoRenda() {
     return (this.total / 100 / this.receita) * 100;
   }
-
-  get textoSaldo() {
-    if (this.total > this.receita) {
-      return 'faltando';
-    }
-
-    return 'sobrando';
-  }
 }
