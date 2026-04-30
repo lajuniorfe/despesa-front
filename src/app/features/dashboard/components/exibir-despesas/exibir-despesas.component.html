@@ -1,4 +1,4 @@
-<div class="card bg-blue-50 flex flex-column">
+<div class="card flex flex-column">
   <h3 class="mb-3 text-center">Despesas</h3>
 
   <p-tabs value="0">
@@ -34,7 +34,7 @@
             </div>
           </ng-template>
           <ng-template #header>
-            <tr>
+            <tr class="bg-card">
               <th class="hidden sm:table-cell">--</th>
               <th>Descrição</th>
               <th>Data</th>
@@ -43,7 +43,7 @@
             </tr>
           </ng-template>
           <ng-template #body let-retorno>
-            <tr>
+            <tr class="bg-card">
               @if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.Essencial) {
                 <td class="hidden sm">
                   <i class="hidden sm pi pi-bookmark-fill text-primary text-md"></i>

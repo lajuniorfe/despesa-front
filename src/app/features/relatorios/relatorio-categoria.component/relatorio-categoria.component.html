@@ -15,18 +15,18 @@
           <div class="flex align-items-center justify-content-center mr-2">
             @if (level == 0 || level == 1) {
               @if (node.data.tipo == 1 && level == 0) {
-                <i class="ph ph-money cursor-pointer border-circle p-2 bg-blue-500 text-white"></i>
+                <i class="ph ph-money cursor-pointer border-circle p-2 bg-blue-500 icon-color"></i>
               }
               @if (node.data.tipo == 2 && level == 0) {
-                <i class="ph ph-coins cursor-pointer border-circle p-2 bg-green-500 text-white"></i>
+                <i class="ph ph-coins cursor-pointer border-circle p-2 bg-green-500 icon-color"></i>
               }
               @if (node.data.tipo == 3 && level == 0) {
                 <i
-                  class="ph ph-piggy-bank cursor-pointer border-circle p-2 bg-yellow-500 text-white"
+                  class="ph ph-piggy-bank cursor-pointer border-circle p-2 bg-yellow-500 icon-color"
                 ></i>
               }
               @if (node.data.tipo == 4 && level == 0) {
-                <i class="ph ph-warning cursor-pointer border-circle p-2 bg-red-500 text-white"></i>
+                <i class="ph ph-warning cursor-pointer border-circle p-2 bg-red-500 icon-color"></i>
               }
             }
           </div>

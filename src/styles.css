@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-@import "primeicons/primeicons.css";
+@import 'primeicons/primeicons.css';
 
-#body, #html{
+#body,
+#html {
   width: 100%;
   height: 100%;
   padding: 0px;
@@ -9,4 +10,32 @@
 }
 .p-confirmpopup {
   z-index: 9999 !important;
+}
+
+:root {
+  color-scheme: light;
+  --p-color-icon: #fbfcfd;
+  --app-surface-soft: #ecfdf5;
+  --app-card: #ffffff;
+  --p-surface-card: #ffffff;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --p-color-icon: #fbfcfd;
+  --app-surface-soft: #0b1220;
+  --app-card: #1f2937;
+  --p-surface-card: #111827;
+}
+
+.icon-color {
+  color: var(--p-color-icon);
+}
+
+.bg-soft {
+  background: var(--app-surface-soft);
+}
+
+.bg-card {
+  background: var(--app-card);
 }

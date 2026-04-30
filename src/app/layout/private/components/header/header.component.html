@@ -14,6 +14,13 @@
   <!-- direita (placeholder pra centralizar certinho) -->
   <div style="width: 2rem"></div>
 </div>
+<p-button
+  [icon]="isDark ? 'pi pi-moon' : 'pi pi-sun'"
+  [rounded]="true"
+  [text]="true"
+  styleClass="text-white"
+  (onClick)="toggleTheme()"
+></p-button>
 
 <!-- DESKTOP -->
 <p-toolbar class="bg-primary hidden md:flex">

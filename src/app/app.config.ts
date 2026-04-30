@@ -1,11 +1,11 @@
-import Aura from '@primeuix/themes/aura';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
-import { routes } from './app.routes';
-import { providePrimeNG } from 'primeng/config';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import localePt from '@angular/common/locales/pt';
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import Aura from '@primeuix/themes/aura';
+import { providePrimeNG } from 'primeng/config';
+import { routes } from './app.routes';
 import { AuthInterceptor } from './core/interceptors/auth-interceptor';
 
 registerLocaleData(localePt, 'pt-BR');
@@ -15,6 +15,9 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        options: {
+          darkModeSelector: '.dark',
+        },
       },
       translation: {
         accept: 'Aceitar',

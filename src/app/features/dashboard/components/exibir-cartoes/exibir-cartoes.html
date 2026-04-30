@@ -1,4 +1,4 @@
-<div class="card bg-blue-50 flex flex-column w-full">
+<div class="card flex flex-column w-full app-card">
   <h3 class="mb-1 text-center">
     Faturas: {{ totalFaturas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
   </h3>
@@ -13,7 +13,7 @@
     [rows]="4"
   >
     <ng-template #list let-items>
-      <div class="h-full overflow-auto">
+      <div class="h-full overflow-auto app-card">
         <div *ngFor="let item of items">
           <div
             class="flex align-items-center justify-content-between p-3 border-bottom-1 surface-border"

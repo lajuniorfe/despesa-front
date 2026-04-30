@@ -41,6 +41,11 @@ export class HeaderComponent {
         },
       },
     ];
+
+    const saved = localStorage.getItem('theme');
+    this.isDark = saved === 'dark';
+
+    this.applyTheme();
   }
 
   deslogar() {
@@ -52,5 +57,23 @@ export class HeaderComponent {
 
   toggleMenu() {
     this.menuAberto = !this.menuAberto;
+  }
+
+  isDark = false;
+
+  toggleTheme() {
+    this.isDark = !this.isDark;
+    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+    this.applyTheme();
+  }
+
+  applyTheme() {
+    const html = document.documentElement;
+
+    if (this.isDark) {
+      html.classList.add('dark');
+    } else {
+      html.classList.remove('dark');
+    }
   }
 }
