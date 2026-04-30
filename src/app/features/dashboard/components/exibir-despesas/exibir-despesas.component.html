@@ -1,4 +1,4 @@
-<div class="card bg-blue-50 h-30rem flex flex-column">
+<div class="card bg-blue-50 flex flex-column">
   <h3 class="mb-3 text-center">Despesas</h3>
 
   <p-tabs value="0">
@@ -93,30 +93,34 @@
           [scrollable]="true"
           scrollHeight="400px"
           class="h-full"
+          [pageLinks]="3"
         >
           <ng-template #header>
             <tr>
-              <th>--</th>
+              <th class="hidden sm:table-cell">--</th>
               <th>Descrição</th>
-              <th>Categoria</th>
+              <th>Data</th>
+              <th class="hidden sm">Categoria</th>
               <th>Valor</th>
             </tr>
           </ng-template>
           <ng-template #body let-retorno>
             <tr>
               @if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.Essencial) {
-                <td><i class="pi pi-bookmark-fill text-primary text-md"></i></td>
+                <td class="hidden sm"><i class="pi pi-bookmark-fill text-primary text-md"></i></td>
               } @else if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.NaoEssencial) {
-                <td><i class="pi pi-gift text-primary text-md"></i></td>
+                <td class="hidden sm"><i class="pi pi-gift text-primary text-md"></i></td>
               } @else if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.Investimento) {
-                <td><i class="pi pi-money-bill text-primary text-md"></i></td>
+                <td class="hidden sm"><i class="pi pi-money-bill text-primary text-md"></i></td>
               } @else if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.Emergencial) {
-                <td><i class="pi pi-plus text-red-100 text-md"></i></td>
+                <td class="hidden sm"><i class="pi pi-plus text-red-100 text-md"></i></td>
               }
               <td>
                 {{ retorno.despesa.descricao }}
               </td>
-              <td>
+              <td>{{ retorno.despesa.data | date: 'dd/MM' }}</td>
+
+              <td class="hidden sm">
                 {{ retorno.despesa.categoria.nome }}
               </td>
               <td>
