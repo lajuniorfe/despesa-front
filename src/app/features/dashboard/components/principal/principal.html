@@ -1,33 +1,33 @@
 @if (mostrarCategorias) {
   <app-gerenciar-categorias (fecharTelaEmitter)="fecharCategorias()"></app-gerenciar-categorias>
 }
-<div class="flex justify-content-center flex-wrap">
-  <div class="flex align-items-center justify-content-center font-bold border-round">
-    <p-button
-      icon="pi pi-chevron-left"
-      [rounded]="true"
-      [text]="true"
-      (onClick)="buscarDespesaMesAnterior()"
-    />
-  </div>
-  <div class="flex align-items-center justify-content-center font-bold border-round">
-    {{ mesDespesas }}
-  </div>
-  <div class="flex align-items-center justify-content-center font-bold border-round">
-    <p-button
-      icon="pi pi-chevron-right"
-      [rounded]="true"
-      [text]="true"
-      (onClick)="buscarDespesaMesFuturo()"
-    />
-  </div>
-</div>
+
 <div class="card w-full p-4 bg-blue-50">
+  <div class="flex justify-content-center flex-wrap">
+    <div class="flex align-items-center justify-content-center font-bold border-round">
+      <p-button
+        icon="pi pi-chevron-left"
+        [rounded]="true"
+        [text]="true"
+        (onClick)="buscarDespesaMesAnterior()"
+      />
+    </div>
+    <div class="flex align-items-center justify-content-center font-bold border-round">
+      {{ mesDespesas }}
+    </div>
+    <div class="flex align-items-center justify-content-center font-bold border-round">
+      <p-button
+        icon="pi pi-chevron-right"
+        [rounded]="true"
+        [text]="true"
+        (onClick)="buscarDespesaMesFuturo()"
+      />
+    </div>
+  </div>
   <div class="grid align-items-center">
     <div class="col-12 md:col-6">
       <div class="mb-3 flex align-items-center justify-content-between">
         <div>
-          <span class="text-color-secondary">Boa tarde</span>
           <h2 class="m-0 font-semibold">Olá, {{ usuario.nome }}</h2>
         </div>
       </div>
@@ -87,7 +87,7 @@
       </div>
     </div>
 
-    <div class="col-12 md:col-6 border-left-2">
+    <div class="col-12 md:col-6 md:border-left-2 border-top-2 md:border-top-none">
       <h3 class="mb-3 text-center">Acesso rápido</h3>
       <div class="flex gap-3 justify-content-center">
         <div
