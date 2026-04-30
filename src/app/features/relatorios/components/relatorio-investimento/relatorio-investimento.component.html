@@ -1,0 +1,34 @@
+<p-card class="w-full bg-card" header="Investimentos">
+  <p>
+    Obs: Por ser tratar de investimento o valor pode variar, fazendo assim que o exibido não seja
+    fiel. Consulte seu banco:
+  </p>
+  <h3>
+    Total Investido:
+    {{ investimentoEmergencia + investimento | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+    Destinado a emergência:
+    {{ investimentoEmergencia | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+  </h3>
+  <h3>
+    Previsão fim do ano:
+    {{
+      totalRetirada + investimentoEmergencia + investimento
+        | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+    }}
+  </h3>
+  <h3>Total de retirada: {{ totalRetirada | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
+  <h3>
+    Saldo devedor:
+    {{ totalRetirada - aporteDivida | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+  </h3>
+  <h3>Total Investido no mês atual: R$ 2.500,00</h3>
+  <h3>
+    Total de retirada do mês atual:
+    {{ retiradaMesAtual | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+  </h3>
+
+  <p-button>Lançar Investimento</p-button>
+  <p-button>Lançar Retirada</p-button>
+  <p-button>Lançar Pagamento de dívida</p-button>
+  <p-button>Lançar Previsão</p-button>
+</p-card>

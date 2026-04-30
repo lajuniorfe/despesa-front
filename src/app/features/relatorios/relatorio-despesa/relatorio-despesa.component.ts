@@ -15,6 +15,7 @@ import { TokenService } from '../../../shared/services/token/token.service';
 import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
 import { CategoriaResponse } from '../../categorias/models/categoria-response.model';
 import { DespesaRelacionamentoResponse } from '../../despesas/models/retorno-despesa.model';
+import { RelatorioInvestimentoComponent } from '../components/relatorio-investimento/relatorio-investimento.component';
 import { GraficoRelatorioComponent } from '../grafico-relatorio.component/grafico-relatorio.component';
 import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/relatorio-categoria.component';
 
@@ -34,6 +35,7 @@ import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/re
     Tabs,
     TabsModule,
     ProgressBarModule,
+    RelatorioInvestimentoComponent,
   ],
   templateUrl: './relatorio-despesa.component.html',
   styleUrl: './relatorio-despesa.component.css',
