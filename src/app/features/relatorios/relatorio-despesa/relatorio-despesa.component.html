@@ -10,9 +10,9 @@
     <p-tabs value="0">
       <div class="flex justify-content-center flex-wrap">
         <p-tablist>
-          <p-tab value="0">Categorias</p-tab>
-          <p-tab value="1">Limites de Gastos</p-tab>
-          <p-tab value="2">Visualização de Investimentos</p-tab>
+          <p-tab value="0" class="text-color">Categorias</p-tab>
+          <p-tab value="1" class="text-color">Limites de Gastos</p-tab>
+          <p-tab value="2" class="text-color">Visualização de Investimentos</p-tab>
         </p-tablist>
       </div>
 
@@ -39,7 +39,7 @@
                   onLabel="Individual"
                   offLabel="Conjuntas"
                   (onChange)="filtrarDespesaUsuario()"
-                  class="w-24"
+                  class="w-24 text-color bg-primary"
                 />
               </div>
             </div>
@@ -58,7 +58,7 @@
                   {{ totalDespesas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                 </p>
               </div>
-              <div class="col-12 md:col-6">
+              <div class="col-12 md:col-6 flex-order-1 md:flex-order-2">
                 <app-grafico-relatorio
                   [data]="data"
                   [options]="options"

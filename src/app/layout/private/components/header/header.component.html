@@ -11,16 +11,16 @@
   <!-- centro -->
   <span class="text-white font-bold text-lg"> Financeiro </span>
 
-  <!-- direita (placeholder pra centralizar certinho) -->
-  <div style="width: 2rem"></div>
+  <div style="width: 2rem">
+    <p-button
+      [icon]="isDark ? 'pi pi-moon' : 'pi pi-sun'"
+      [rounded]="true"
+      [text]="true"
+      styleClass="text-color"
+      (onClick)="toggleTheme()"
+    ></p-button>
+  </div>
 </div>
-<p-button
-  [icon]="isDark ? 'pi pi-moon' : 'pi pi-sun'"
-  [rounded]="true"
-  [text]="true"
-  styleClass="text-white"
-  (onClick)="toggleTheme()"
-></p-button>
 
 <!-- DESKTOP -->
 <p-toolbar class="bg-primary hidden md:flex">

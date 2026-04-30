@@ -43,8 +43,8 @@ export class GraficoRelatorioComponent {
 
     if (isPlatformBrowser(this.platformId)) {
       const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue('--p-text-color');
-      console.log(textColor);
+      const textColor = documentStyle.getPropertyValue('--p-text-color').trim();
+
       const categorias = this.node.children || [];
 
       const labels = categorias.map((c: any) => c.label.split('----------')[0].trim());
