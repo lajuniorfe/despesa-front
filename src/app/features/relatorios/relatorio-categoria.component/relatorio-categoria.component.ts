@@ -23,7 +23,6 @@ export class RelatorioCategoriaComponent {
 
   ngOnInit() {
     if (this.arvores) {
-      console.log('arvores', this.arvores);
       this.selectedNode = this.arvores[0];
       this.selectedNode.expanded = true;
     }

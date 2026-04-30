@@ -70,15 +70,100 @@
           </div>
         </p-tabpanel>
         <p-tabpanel value="1">
-          <p>Receita: 13250</p>
-          <p>Destinado para gastos Essênciais: 6.625 - 50%</p>
-          <p>Destinado para gastos Não Essênciais: 3.975 - 30%</p>
-          <p>Destinado para Investimentos: 2.650 - 20%</p>
+          @if (totalGastoEmergencial > 0) {
+            <div class="mb-2">
+              <h3 class="text-red-600">
+                Atenção: Houve gasto emergêncial no valor de:
+                {{ totalGastoEmergencial / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                comprometendo {{ porcentagemEmergencial | number: '1.1-1' }}% da renda total!
+              </h3>
+            </div>
+          }
 
-          <p>
-            Exibindo em grafico de barras com um informativo de onde ate onde deveria gastar, vou
-            mostrar o total de gastos essêncial, não essêncial e investimentos
-          </p>
+          <div class="mb-2">
+            <h3 class="text-red-600">
+              {{ porcentagemUsoRenda | number: '1.1-1' }}% da sua renda foi destinada a despesas,
+              totalizando: {{ total / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} e
+              {{ textoSaldo }}
+              {{ receita - total / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}.
+            </h3>
+          </div>
+
+          <div class="mb-2">
+            <h4>Receita: {{ receita | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h4>
+          </div>
+
+          <div class="mb-3">
+            <div class="flex justify-content-start flex-wrap gap-4">
+              <div class="flex align-items-center justify-content-center">
+                <h4 class="m-0">Essênciais:</h4>
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                Limite:
+                {{ limiteEssencial / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} - (50%)
+              </div>
+
+              <div class="flex align-items-center justify-content-center">
+                Gastos:
+                {{ gastoTotalEssencial / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} -
+                ({{ (gastoTotalEssencial / 100 / receita) * 100 | number: '1.1-1' }}%)
+              </div>
+            </div>
+            <p-progressbar
+              class="w-6"
+              [value]="percentualEssencial | number: '1.1-1'"
+              [showValue]="true"
+              [color]="percentualEssencial > 100 ? 'red' : 'grenn'"
+            ></p-progressbar>
+          </div>
+
+          <div class="mb-3">
+            <div class="flex justify-content-start flex-wrap gap-4">
+              <div class="flex align-items-center justify-content-center">
+                <h4 class="m-0">Não Essênciais:</h4>
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                Limite:
+                {{ limiteNaoEssencial / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} -
+                (30%)
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                Gastos:
+                {{ gastoTotalNaoEssencial / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                - ({{ (gastoTotalNaoEssencial / 100 / receita) * 100 | number: '1.1-1' }}%)
+              </div>
+            </div>
+            <p-progressbar
+              class="w-6"
+              [value]="percentualNaoEssencial | number: '1.1-1'"
+              [showValue]="true"
+              [color]="percentualNaoEssencial > 100 ? 'red' : 'grenn'"
+            ></p-progressbar>
+          </div>
+
+          <div class="mb-3">
+            <div class="flex justify-content-start flex-wrap gap-4">
+              <div class="flex align-items-center justify-content-center">
+                <h4 class="m-0">Investimento:</h4>
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                Limite:
+                {{ limiteInvestimento / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }} -
+                (20%)
+              </div>
+              <div class="flex align-items-center justify-content-center">
+                Gastos:
+                {{ gastoTotalInvestimento / 100 | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+                - ({{ (gastoTotalInvestimento / 100 / receita) * 100 | number: '1.1-1' }}%)
+              </div>
+            </div>
+            <p-progressbar
+              class="w-6"
+              [value]="percentualInvestimento | number: '1.1-1'"
+              [showValue]="true"
+              [color]="percentualInvestimento > 100 ? 'red' : 'grenn'"
+            ></p-progressbar>
+          </div>
         </p-tabpanel>
         <p-tabpanel value="2">
           <p class="m-0">

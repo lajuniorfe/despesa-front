@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, Input, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import { DividerModule } from 'primeng/divider';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { Tabs, TabsModule } from 'primeng/tabs';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TreeModule } from 'primeng/tree';
@@ -32,12 +33,13 @@ import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/re
     ToggleButtonModule,
     Tabs,
     TabsModule,
+    ProgressBarModule,
   ],
   templateUrl: './relatorio-despesa.component.html',
   styleUrl: './relatorio-despesa.component.css',
 })
 export class RelatorioDespesaComponent {
-  mesAtual = 'Maio';
+  @Input() mesAtual!: string;
   listaDespesasMesAtual!: DespesaRelacionamentoResponse[];
   listaDespesasOriginal!: DespesaRelacionamentoResponse[];
   categorias: CategoriaResponse[] = [];
@@ -50,12 +52,47 @@ export class RelatorioDespesaComponent {
   totalDespesas: number = 0;
   coresCategorias: string = '';
   checarDespesaUsuario: boolean = false;
+  receita = 13250;
+  limiteEssencial = this.receita * 0.5 * 100;
+  limiteNaoEssencial = this.receita * 0.3 * 100;
+  limiteInvestimento = this.receita * 0.2 * 100;
+  gastoTotalEssencial = 0;
+  gastoTotalNaoEssencial = 0;
+  gastoTotalInvestimento = 0;
+  totalGastoEmergencial = 0;
+  total = 0;
 
   constructor(private readonly tokenService: TokenService) {}
 
   ngOnInit() {
     this.listaDespesasOriginal = JSON.parse(sessionStorage.getItem('despesas') || '[]');
     this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
+
+    this.mesAtual = new Date(this.listaDespesasOriginal[0].data)
+      .toLocaleDateString('pt-BR', { month: 'long' })
+      .replace(/^./, (letra) => letra.toUpperCase());
+
+    this.gastoTotalEssencial = this.listaDespesasMesAtual
+      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Essencial)
+      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+
+    this.gastoTotalNaoEssencial = this.listaDespesasMesAtual
+      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.NaoEssencial)
+      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+
+    this.gastoTotalInvestimento = this.listaDespesasMesAtual
+      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Investimento)
+      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+
+    this.totalGastoEmergencial = this.listaDespesasMesAtual
+      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Emergencial)
+      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+
+    this.total =
+      this.gastoTotalEssencial +
+      this.gastoTotalNaoEssencial +
+      this.gastoTotalInvestimento +
+      this.totalGastoEmergencial;
 
     if (this.listaDespesasMesAtual) {
       this.listaDespesasMesAtual = this.checarDespesaUsuario
@@ -197,5 +234,33 @@ export class RelatorioDespesaComponent {
         categoriaNode.data.percentual = this.calcularPercentual(totalTipo, totalCategoria);
       });
     });
+  }
+
+  get percentualEssencial() {
+    return (this.gastoTotalEssencial / this.limiteEssencial) * 100;
+  }
+
+  get percentualNaoEssencial() {
+    return (this.gastoTotalNaoEssencial / this.limiteNaoEssencial) * 100;
+  }
+
+  get percentualInvestimento() {
+    return (this.gastoTotalInvestimento / this.limiteInvestimento) * 100;
+  }
+
+  get porcentagemEmergencial() {
+    return (this.totalGastoEmergencial / 100 / this.receita) * 100;
+  }
+
+  get porcentagemUsoRenda() {
+    return (this.total / 100 / this.receita) * 100;
+  }
+
+  get textoSaldo() {
+    if (this.total > this.receita) {
+      return 'faltando';
+    }
+
+    return 'sobrando';
   }
 }
