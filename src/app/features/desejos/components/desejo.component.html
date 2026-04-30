@@ -1,19 +1,22 @@
-<p-table [value]="produtos" [tableStyle]="{ 'min-width': '50rem' }">
-  <ng-template #header>
-    <tr>
-      <th>Nome</th>
-      <th>Preço</th>
-      <th>Usuario</th>
-      <th>Prioridade</th>
-    </tr>
-  </ng-template>
-  <ng-template #body let-product>
-    <tr>
-      <td>{{ product.nome }}</td>
-
-      <td>{{ product.preco }}</td>
-      <td>{{ product.usuario }}</td>
-      <td>{{ product.prioridade }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+<p-card class="w-full bg-card" header="Desejos">
+  <div class="m-3">
+    <p-table [value]="produtos" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template #header>
+        <tr>
+          <th>Nome</th>
+          <th>Preço</th>
+          <th>Usuario</th>
+          <th>Prioridade</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-product>
+        <tr>
+          <td>{{ product.nome }}</td>
+          <td>{{ product.preco }}</td>
+          <td>{{ product.usuario }}</td>
+          <td>{{ product.prioridade }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</p-card>
