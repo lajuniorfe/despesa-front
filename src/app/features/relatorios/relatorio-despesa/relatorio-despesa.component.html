@@ -45,7 +45,7 @@
             </div>
 
             <div class="grid">
-              <div class="col-6">
+              <div class="col-12 md:col-6 flex-order-2 md:flex-order-1">
                 @if (arvores?.length) {
                   <app-relatorio-categoria
                     [arvores]="arvores"
@@ -53,12 +53,12 @@
                     (iniciarGraficoEmit)="selecionado($event)"
                   ></app-relatorio-categoria>
                 }
-                <p class="flex justify-content-end">
+                <p class="flex justify-content-end text-red-500">
                   Total de despesas:
                   {{ totalDespesas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                 </p>
               </div>
-              <div class="col-6">
+              <div class="col-12 md:col-6">
                 <app-grafico-relatorio
                   [data]="data"
                   [options]="options"
@@ -89,66 +89,6 @@
       </p-tabpanels>
     </p-tabs>
 
-    <!-- <div class="flex justify-content-center flex-wrap">
-      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-        Categorias
-      </div>
-      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-        Tipos De Despesas
-      </div>
-      <div class="flex align-items-center justify-content-center font-bold border-round m-2">
-        Algo
-      </div>
-    </div> -->
     <p-divider class="mt-1"></p-divider>
-
-    <!-- <div class="flex justify-content-start flex-wrap mb-0 pb-0">
-      <div class="flex align-items-center justify-content-center font-bold border-round m-0">
-        <h3>Categorias</h3>
-      </div>
-      <div class="flex align-items-center justify-content-center ml-6">
-        <p-button label="Filtrar" icon="pi pi-filter" />
-      </div>
-    </div> -->
-
-    <!-- <div>
-      <div class="flex justify-content-start flex-wrap mb-0 pb-0">
-        <div class="flex align-items-center justify-content-center font-bold border-round m-0">
-          <h3>Despesas</h3>
-        </div>
-        <div class="flex align-items-center justify-content-center ml-6">
-          <p-togglebutton
-            onLabel="Individual"
-            offLabel="Conjuntas"
-            (onChange)="filtrarDespesaUsuario()"
-            class="w-24"
-          />
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="col-6">
-          @if (arvores?.length) {
-            <app-relatorio-categoria
-              [arvores]="arvores"
-              [tipoGraficoExbido]="tipoGraficoExbido"
-              (iniciarGraficoEmit)="selecionado($event)"
-            ></app-relatorio-categoria>
-          }
-          <p class="flex justify-content-end">
-            Total de despesas:
-            {{ totalDespesas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-          </p>
-        </div>
-        <div class="col-6">
-          <app-grafico-relatorio
-            [data]="data"
-            [options]="options"
-            [tipoGraficoExbido]="tipoGraficoExbido"
-            [node]="Node"
-          ></app-grafico-relatorio>
-        </div>
-      </div>
-    </div> -->
   </div>
 </p-card>
