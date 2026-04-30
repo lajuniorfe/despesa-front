@@ -1,31 +1,43 @@
-<div class="card bg-blue-50 flex flex-column  w-full">
-  <h3 class="mb-1 text-center">Faturas: {{totalFaturas | currency:'BRL':'symbol':'1.2-2':'pt-BR'}}</h3>
+<div class="card bg-blue-50 flex flex-column w-full">
+  <h3 class="mb-1 text-center">
+    Faturas: {{ totalFaturas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+  </h3>
   <p-divider layout="horizontal"></p-divider>
   <h3 class="m-3 text-start">Meus cartões</h3>
 
-  <p-dataview #dv [value]="listaAgrupadas" class="flex-1 overflow-hidden" [paginator]="true" [rows]="4">
+  <p-dataview
+    #dv
+    [value]="listaAgrupadas"
+    class="flex-1 overflow-hidden"
+    [paginator]="true"
+    [rows]="4"
+  >
     <ng-template #list let-items>
       <div class="h-full overflow-auto">
         <div *ngFor="let item of items">
-          <div class="flex align-items-center justify-content-between p-3 border-bottom-1 surface-border">
+          <div
+            class="flex align-items-center justify-content-between p-3 border-bottom-1 surface-border"
+          >
             <div class="flex align-items-center gap-3">
               <img class="w-5rem border-round" [src]="item.imagemCartao" alt="numank" />
               <div class="flex flex-column">
                 <span class="font-medium text-sm">{{ item.nomeCartao }}</span>
                 <span class="text-xs text-color-secondary">
-                  Fatura Atual (Venc. {{item.vencimento | date:'dd/MM'}})
+                  Fatura Atual (Venc. {{ item.vencimento | date: 'dd/MM' }})
                 </span>
 
                 <span class="text-sm font-semibold">
-                  {{item.valorFatura | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+                  {{ item.valorFatura | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
                 </span>
               </div>
             </div>
-            <p-button class="flex-auto md:flex-initial whitespace-nowrap" label="Ver Fatura"
-              (onClick)="detalharFaturas(item)" />
+            <p-button
+              class="flex-auto flex-initial whitespace-nowrap"
+              label="Ver Fatura"
+              (onClick)="detalharFaturas(item)"
+            />
           </div>
         </div>
-
       </div>
     </ng-template>
   </p-dataview>
