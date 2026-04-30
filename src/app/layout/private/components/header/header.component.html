@@ -1,75 +1,144 @@
-<p-toolbar class="bg-primary">
-  <ng-template pTemplate="start">
-    <div class="flex align-itens-center gap-3">
-      <span
-        class="text-xl font-bold text-white cursor-pointer flex align-itens-center no-underline"
-      >
-        Financeiro
-      </span>
+<!-- MOBILE -->
+<div class="md:hidden flex align-items-center justify-content-between bg-primary px-1 py-1">
+  <!-- esquerda -->
+  <p-button
+    icon="pi pi-bars"
+    [text]="true"
+    styleClass="text-white"
+    (click)="menuAberto = true"
+  ></p-button>
 
-      <div class="flex align-itens-center gap-3 ml-3">
-        <a
-          routerLink="/"
-          routerLinkActive="active-link"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="mt-1 text-white font-medium hover:text-color transition-colors no-underline"
-        >
-          Visão geral
-        </a>
-        <a
-          [routerLink]="['/relatorios']"
-          routerLinkActive="active-link"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="mt-1 text-white font-medium hover:text-color transition-colors no-underline"
-        >
-          Relatórios
-        </a>
-        <a
-          [routerLink]="['/pagamentos']"
-          routerLinkActive="active-link"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="mt-1 text-white font-medium hover:text-color transition-colors no-underline"
-        >
-          Gerenciar Pagamentos
-        </a>
-        <a
-          [routerLink]="['/desejos']"
-          routerLinkActive="active-link"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="mt-1 text-white font-medium hover:text-color transition-colors no-underline"
-        >
-          Lista de Desejos
-        </a>
+  <!-- centro -->
+  <span class="text-white font-bold text-lg"> Financeiro </span>
+
+  <!-- direita (placeholder pra centralizar certinho) -->
+  <div style="width: 2rem"></div>
+</div>
+
+<!-- DESKTOP -->
+<p-toolbar class="bg-primary hidden md:flex">
+  <ng-template pTemplate="start">
+    <div class="flex align-content-start">
+      <div class="flex align-items-start justify-content-start">
+        <span class="text-xl font-bold text-white">Financeiro </span>
       </div>
+
+      <div class="flex align-items-start justify-content-start">
+        <div class="flex align-items-center gap-3 ml-3">
+          <a routerLink="/" routerLinkActive="active-link" class="text-white no-underline"
+            >Visão geral</a
+          >
+
+          <a routerLink="/relatorios" routerLinkActive="active-link" class="text-white no-underline"
+            >Relatórios</a
+          >
+
+          <a routerLink="/pagamentos" routerLinkActive="active-link" class="text-white no-underline"
+            >Pagamentos</a
+          >
+
+          <a routerLink="/desejos" routerLinkActive="active-link" class="text-white no-underline"
+            >Desejos</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="flex align-items-center gap-3">
+      <!-- <span class="text-xl font-bold text-white"> Financeiro </span> -->
+
+      <!-- <div class="flex align-items-center gap-3 ml-3">
+        <a routerLink="/" routerLinkActive="active-link" class="text-white no-underline"
+          >Visão geral</a
+        >
+
+        <a routerLink="/relatorios" routerLinkActive="active-link" class="text-white no-underline"
+          >Relatórios</a
+        >
+
+        <a routerLink="/pagamentos" routerLinkActive="active-link" class="text-white no-underline"
+          >Pagamentos</a
+        >
+
+        <a routerLink="/desejos" routerLinkActive="active-link" class="text-white no-underline"
+          >Desejos</a
+        >
+      </div> -->
     </div>
   </ng-template>
 
   <ng-template pTemplate="end">
-    <div class="flex align-itens-center gap-3">
-      <p-button icon="pi pi-bell" rounded="true" styleClass="bg-white" [text]="true"></p-button>
-      <p-speeddial [model]="items" direction="down" [transitionDelay]="80">
-        <ng-template #button let-toggleCallback="toggleCallback">
-          <p-button
-            icon="pi pi-user"
-            outlined
-            rounded="true"
-            styleClass="bg-white"
-            (click)="toggleCallback($event)"
-          >
-          </p-button>
-        </ng-template>
-        <ng-template #item let-item let-toggleCallback="toggleCallback">
-          <div
-            class="flex flex-col items-center justify-between gap-2 p-2 cursor-pointer"
-            (click)="toggleCallback($event, item)"
-          >
-            <span [class]="item.icon"></span>
-            <span>
-              {{ item.label }}
-            </span>
-          </div>
-        </ng-template>
-      </p-speeddial>
+    <div class="flex align-content-center">
+      <div class="flex align-items-center justify-content-end">
+        <p-button
+          icon="pi pi-bell "
+          [rounded]="true"
+          styleClass="text-white hover:bg-primary"
+          [text]="true"
+        ></p-button>
+      </div>
+      <div class="flex align-items-center justify-content-end ml-2">
+        <p-button
+          icon="pi pi-sign-out"
+          [rounded]="true"
+          styleClass="text-white hover:bg-primary"
+          [text]="true"
+          (onClick)="deslogar()"
+        ></p-button>
+      </div>
     </div>
   </ng-template>
 </p-toolbar>
+
+<!-- MENU MOBILE -->
+<p-drawer [(visible)]="menuAberto" header="Financeiro">
+  <div class="flex flex-column gap-2">
+    <a
+      routerLink="/"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="menuAberto = false"
+      routerLinkActive="active-link"
+      class="mt-1 text-primary font-medium hover:text-color transition-colors no-underline"
+    >
+      Visão geral
+    </a>
+
+    <a
+      routerLink="/relatorios"
+      (click)="menuAberto = false"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="mt-1 text-primary font-medium hover:text-color transition-colors no-underline"
+    >
+      Relatórios
+    </a>
+
+    <a
+      routerLink="/pagamentos"
+      (click)="menuAberto = false"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="mt-1 text-primary font-medium hover:text-color transition-colors no-underline"
+    >
+      Pagamentos
+    </a>
+
+    <a
+      routerLink="/desejos"
+      (click)="menuAberto = false"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="mt-1 text-primary font-medium hover:text-color transition-colors no-underline"
+    >
+      Desejos
+    </a>
+  </div>
+
+  <p-divider></p-divider>
+
+  <a
+    (click)="deslogar()"
+    class="mt-1 text-black font-medium hover:text-color transition-colors no-underline"
+  >
+    Sair
+  </a>
+</p-drawer>

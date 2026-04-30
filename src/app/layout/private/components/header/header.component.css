@@ -1,3 +1,24 @@
 .active-link {
   border-bottom: 2px solid white; /* sublinhado */
 }
+
+@media (max-width: 768px) {
+  .active-link {
+    border-bottom: none;
+    border-left: 4px solid rgb(48, 199, 34);
+    padding-left: 8px;
+  }
+}
+
+.menu-item {
+  padding: 12px;
+  text-decoration: none;
+  color: var(--primary-color) !important;
+  border-radius: 6px;
+  display: block;
+}
+
+.menu-item.active-link {
+  border-left: 4px solid var(--primary-color) !important;
+  background: rgba(110, 36, 36, 0.05);
+}
