@@ -244,6 +244,17 @@ export class HomeComponent {
   }
 
   fecharDetalheDespesa() {
+    const mesAtual = new Date().getMonth() + 1;
+    const anoAtual = new Date().getFullYear();
     this.exbirDetalheDespesa = false;
+    this.buscarDespesasMesAtual(mesAtual, anoAtual);
+  }
+
+  fecharDetalheFatura(){
+    const mesAtual = new Date().getMonth() + 1;
+    const anoAtual = new Date().getFullYear();
+    this.exbirDetalheDespesa = false;
+    this.buscarDespesasMesAtual(mesAtual, anoAtual);
+    this.exibirDetalheFatura = false;
   }
 }

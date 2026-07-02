@@ -22,6 +22,7 @@ import { TipoPagamentoService } from '../../../tipo-pagamentos/services/tipo-pag
 import { AlterarDespesaRequest } from '../../models/despesa-request-alterar.model';
 import { DespesaRelacionamentoResponse } from '../../models/retorno-despesa.model';
 import { DespesasService } from '../../services/despesas.service';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
 
 @Component({
   selector: 'app-detalhe-despesa',
@@ -65,31 +66,50 @@ export class DetalheDespesaComponent {
     private readonly cartaoService: CartaoService,
     private readonly tokenService: TokenService,
     private readonly despesaService: DespesasService,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit() {
     if (this.despesaRecebida) {
       this.criarFormulario();
       this.carregarDados();
+
+      this.recorrente =  this.despesaRecebida.totalParcela> 1 ? true : false;
+      if(this.despesaRecebida.totalParcela> 1){
+        this.recorrente = true;
+        this.numeroParcela = this.despesaRecebida.totalParcela;
+        this.valorParcelas = this.despesaRecebida.valor;
+      }
     }
 
-    this.valorInicial = this.formulario.value;
+    
 
-    this.formulario.valueChanges.subscribe((valorAtual) => {
-      this.formAlterado = JSON.stringify(valorAtual) !== JSON.stringify(this.valorInicial);
+
+    this.formulario.get('parcela')?.valueChanges.subscribe(parcela => {
+      this.numeroParcela = parcela;
+      this.recalcularValorParcelas(this.formulario.value.valor);
+    });
+
+    
+    this.formulario.get('valor')?.valueChanges.subscribe(valor => {
+      this.recalcularValorParcelas(valor);
     });
   }
 
+  recalcularValorParcelas(valor:number){
+     this.valorParcelas = valor/this.numeroParcela;
+  }
+
   criarFormulario() {
-    const data = this.despesaRecebida.data ? new Date(this.despesaRecebida.data) : null;
+    const data = this.despesaRecebida.despesa.data ? new Date(this.despesaRecebida.despesa.data) : null;
 
     this.formulario = this.fb.group({
       descricao: [this.despesaRecebida.despesa.descricao, Validators.required],
-      valor: [this.despesaRecebida.valor, Validators.required],
+      valor: [this.despesaRecebida.despesa.valor, Validators.required],
       data: [data, Validators.required],
       categoria: [null, Validators.required],
       tipoPagamento: [null, Validators.required],
-      parcela: [this.despesaRecebida.numeroParcela, Validators.required],
+      parcela: [this.despesaRecebida.totalParcela, Validators.required],
       recorrencia: [this.despesaRecebida.despesa.recorrencia.id, Validators.required],
     });
 
@@ -111,8 +131,6 @@ export class DetalheDespesaComponent {
   }
 
   carregarDados() {
-    // this.loadingService.show();
-
     forkJoin({
       listaTipoPagamento: this.tipoPagamentoService.listarTiposPagamento(),
       cartoes: this.cartaoService.listarCartoes(),
@@ -209,6 +227,7 @@ export class DetalheDespesaComponent {
   }
 
   alterarDespesa() {
+     this.loadingService.show();
     const valores = this.formulario.value;
 
     const request: AlterarDespesaRequest = {
@@ -229,7 +248,22 @@ export class DetalheDespesaComponent {
 
     this.despesaService.alterarDespesa(request).subscribe({
       next: (retorno) => {
-        console.log('retorno alterar', retorno);
+        this.despesaRecebida = retorno;
+        this.loadingService.hide();
+       this.fecharTelaEmitir.emit();
+    
+      },
+      error: (err) => {
+        console.log('retorno alterar erro', err);
+      },
+    });
+  }
+
+  excluirDespesa() {
+    this.loadingService.show();
+    this.despesaService.excluirDespesa(this.despesaRecebida.despesa.id).subscribe({
+      next: () => {
+        this.loadingService.hide();
         this.fecharTelaEmitir.emit();
       },
       error: (err) => {

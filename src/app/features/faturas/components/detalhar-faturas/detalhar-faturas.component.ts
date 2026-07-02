@@ -36,10 +36,9 @@ export class DetalharFaturasComponent {
   valorTotalFatura = 0;
 
   ngOnInit() {
-    const hoje = new Date();
-    const proximoMes = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 1);
+    const dataRefenciaFatura = new Date(this.detalheFaturaAtual.despesas[0].data);
 
-    const nomeMes = proximoMes.toLocaleString('pt-BR', { month: 'long' });
+    const nomeMes = dataRefenciaFatura.toLocaleString('pt-BR', { month: 'long' });
     const nomeMesFormatado = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
 
     this.mesFatura = nomeMesFormatado;

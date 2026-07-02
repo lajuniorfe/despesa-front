@@ -38,4 +38,8 @@ export class DespesasService {
       headers: this.headers,
     });
   }
+
+  excluirDespesa(id: number) {
+    return this.http.delete(`${this.caminho}/${id}`);
+  }
 }

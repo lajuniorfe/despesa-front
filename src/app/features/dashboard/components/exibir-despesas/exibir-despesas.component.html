@@ -40,6 +40,7 @@
               <th>Data</th>
               <th class="hidden sm">Categoria</th>
               <th>Valor</th>
+              <th>Pagamento</th>
             </tr>
           </ng-template>
           <ng-template #body let-retorno>
@@ -72,6 +73,11 @@
                   <div>{{ retorno.numeroParcela }} de {{ retorno.totalParcela }}</div>
                 }
               </td>
+              <td>@if(retorno.fatura){
+                {{retorno.fatura.cartao.nome}}
+                }@else{
+                  Pix
+                }</td>
             </tr>
           </ng-template>
           <ng-template #footer>

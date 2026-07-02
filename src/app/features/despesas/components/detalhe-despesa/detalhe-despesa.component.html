@@ -18,7 +18,7 @@
 
         <div class="flex gap-2 mb-5">
           <div class="flex flex-column flex-1">
-            <label class="w-full text-gray-600" for="username">Valor</label>
+            <label class="w-full text-gray-600" for="username">Valor da Despesa</label>
             <p-inputnumber
               formControlName="valor"
               mode="currency"
@@ -149,6 +149,15 @@
             icon="pi pi-check"
             [disabled]="!formAlterado || formulario.invalid"
             (onClick)="alterarDespesa()"
+          />
+
+           <p-button
+            label="Excluir"
+            variant="text"
+            severity="danger"
+            icon="pi pi-trash"
+            [disabled]="!formAlterado || formulario.invalid"
+            (onClick)="excluirDespesa()"
           />
         </div>
       </form>

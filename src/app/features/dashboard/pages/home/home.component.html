@@ -14,11 +14,11 @@
 
   <div class="w-full md:w-10">
     <div class="grid">
-      <div class="col-12 md:col-6 p-1">
+      <div class="col-12 md:col-7 p-1">
         <app-exibir-despesas [listaDespesasRecebida]="listaDespesaMesAtual"></app-exibir-despesas>
       </div>
 
-      <div class="col-12 md:col-6 p-1">
+      <div class="col-12 md:col-5 p-1">
         <app-exibir-cartoes
           [listaAgrupadas]="listaAgrupada"
           (detalharFaturasEmittir)="detalharFatura($event)"
@@ -31,7 +31,7 @@
 @if (exibirDetalheFatura) {
   <app-detalhar-faturas
     [detalheFaturaAtual]="faturaRecebida"
-    (fecharTelaEmitir)="exibirDetalheFatura = !exibirDetalheFatura"
+    (fecharTelaEmitir)="fecharDetalheFatura()"
     (abrirDetalhesDespesaEmitir)="abrirDetalheDespesa($event)"
   ></app-detalhar-faturas>
 }
