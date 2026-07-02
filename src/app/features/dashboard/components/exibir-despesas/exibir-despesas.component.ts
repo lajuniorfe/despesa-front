@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -31,10 +31,13 @@ import { TipoCategoriaEnum } from './../../../../shared/enums/tipoCategora.enum'
 export class ExibirDespesasComponent {
   tipoCategoriaEnum = TipoCategoriaEnum;
   @Input() listaDespesasRecebida: DespesaRelacionamentoResponse[] = [];
+  @Output() abrirDetalhesDespesaEmitir = new EventEmitter<any>();
   listaDespesasConjuntas: DespesaRelacionamentoResponse[] = [];
   listaDespesasIndividuais: DespesaRelacionamentoResponse[] = [];
   valorTotalIndividual = 0;
   valorTotalCasal = 0;
+selectedDespesa: any | null = null;
+
 
   constructor(private readonly tokenService: TokenService) {}
 
@@ -60,4 +63,10 @@ export class ExibirDespesasComponent {
       );
     }
   }
+
+ onRowSelect(event: any): void {
+  let despesaSelecionada = event.data as DespesaRelacionamentoResponse;
+  console.log(despesaSelecionada.despesa.descricao);
+  this.abrirDetalhesDespesaEmitir.emit(event.data);
+}
 }

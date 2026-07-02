@@ -15,7 +15,9 @@
   <div class="w-full md:w-10">
     <div class="grid">
       <div class="col-12 md:col-7 p-1">
-        <app-exibir-despesas [listaDespesasRecebida]="listaDespesaMesAtual"></app-exibir-despesas>
+        <app-exibir-despesas [listaDespesasRecebida]="listaDespesaMesAtual"
+        (abrirDetalhesDespesaEmitir)="abrirDetalheDespesa($event)"
+        ></app-exibir-despesas>
       </div>
 
       <div class="col-12 md:col-5 p-1">

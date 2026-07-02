@@ -19,6 +19,9 @@
           class="h-full"
           [globalFilterFields]="['despesa.descricao', 'despesa.valor']"
           [pageLinks]="3"
+          [(selection)]="selectedDespesa"
+          selectionMode="single"
+          (onRowSelect)="onRowSelect($event)"
         >
           <ng-template pTemplate="caption">
             <div class="card flex flex-wrap md:justify-content-end">
@@ -33,7 +36,7 @@
               </p-iconfield>
             </div>
           </ng-template>
-          <ng-template #header>
+          <ng-template #header >
             <tr class="bg-card">
               <th class="hidden sm:table-cell">--</th>
               <th>Descrição</th>
@@ -43,8 +46,8 @@
               <th>Pagamento</th>
             </tr>
           </ng-template>
-          <ng-template #body let-retorno>
-            <tr class="bg-card">
+          <ng-template #body let-retorno let-rowIndex="rowIndex">
+            <tr class="bg-card" [pSelectableRow]="retorno" [pSelectableRowIndex]="rowIndex">
               @if (retorno.despesa.categoria.tipo == tipoCategoriaEnum.Essencial) {
                 <td class="hidden sm">
                   <i class="hidden sm pi pi-bookmark-fill text-primary text-md"></i>
