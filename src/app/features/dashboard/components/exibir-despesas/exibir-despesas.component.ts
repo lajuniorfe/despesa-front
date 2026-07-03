@@ -36,7 +36,7 @@ export class ExibirDespesasComponent {
   listaDespesasIndividuais: DespesaRelacionamentoResponse[] = [];
   valorTotalIndividual = 0;
   valorTotalCasal = 0;
-selectedDespesa: any | null = null;
+  selectedDespesa: any | null = null;
 
 
   constructor(private readonly tokenService: TokenService) {}
@@ -62,11 +62,11 @@ selectedDespesa: any | null = null;
         0,
       );
     }
+
+    console.log('Lista de Despesas Recebida:', this.listaDespesasIndividuais);
   }
 
  onRowSelect(event: any): void {
-  let despesaSelecionada = event.data as DespesaRelacionamentoResponse;
-  console.log(despesaSelecionada.despesa.descricao);
   this.abrirDetalhesDespesaEmitir.emit(event.data);
 }
 }
