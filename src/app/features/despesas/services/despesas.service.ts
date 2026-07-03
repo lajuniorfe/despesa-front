@@ -42,4 +42,9 @@ export class DespesasService {
   excluirDespesa(id: number) {
     return this.http.delete(`${this.caminho}/${id}`);
   }
+
+  listarReceitas(){
+    const ID_CATEGORIA = 31;
+    return this.http.get<DespesaRequest[]>(`${this.caminho}/categoria/${ID_CATEGORIA}`);
+  }
 }

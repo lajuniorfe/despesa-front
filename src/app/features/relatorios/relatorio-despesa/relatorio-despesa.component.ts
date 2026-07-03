@@ -18,6 +18,8 @@ import { DespesaRelacionamentoResponse } from '../../despesas/models/retorno-des
 import { RelatorioInvestimentoComponent } from '../components/relatorio-investimento/relatorio-investimento.component';
 import { GraficoRelatorioComponent } from '../grafico-relatorio.component/grafico-relatorio.component';
 import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/relatorio-categoria.component';
+import { DespesasService } from '../../despesas/services/despesas.service';
+import { DespesaRequest } from '../../despesas/models/despesa-request.model';
 
 @Component({
   selector: 'app-relatorio-despesa.component',
@@ -54,19 +56,21 @@ export class RelatorioDespesaComponent {
   totalDespesas: number = 0;
   coresCategorias: string = '';
   checarDespesaUsuario: boolean = false;
-  receita = 13250;
-  limiteEssencial = this.receita * 0.5 * 100;
-  limiteNaoEssencial = this.receita * 0.3 * 100;
-  limiteInvestimento = this.receita * 0.2 * 100;
+  receita = 0;
+  limiteEssencial = 0;
+  limiteNaoEssencial = 0;
+  limiteInvestimento = 0;
   gastoTotalEssencial = 0;
   gastoTotalNaoEssencial = 0;
   gastoTotalInvestimento = 0;
   totalGastoEmergencial = 0;
   total = 0;
 
-  constructor(private readonly tokenService: TokenService) {}
+  constructor(private readonly tokenService: TokenService, 
+    private readonly despesasService: DespesasService) {}
 
   ngOnInit() {
+    this.buscarReceita();
     this.listaDespesasOriginal = JSON.parse(sessionStorage.getItem('despesas') || '[]');
     this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
 
@@ -114,6 +118,16 @@ export class RelatorioDespesaComponent {
       this.atualizarRelatorio();
     }
   }
+
+  buscarReceita(){
+    this.despesasService.listarReceitas().subscribe((response:DespesaRequest[]) => {
+      this.receita = response[0].valor;
+      this.limiteEssencial = this.receita * 0.5 * 100;
+      this.limiteNaoEssencial = this.receita * 0.3 * 100;
+      this.limiteInvestimento = this.receita * 0.2 * 100;
+    });
+  }
+
 
   atualizarRelatorio() {
     const categoriasMapGlobal = new Map<number, CategoriaResponse>();
