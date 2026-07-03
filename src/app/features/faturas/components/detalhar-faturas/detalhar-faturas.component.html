@@ -41,6 +41,7 @@
             <th>--</th>
             <th>Descrição</th>
             <th>Categoria</th>
+            <th>Data</th>
             <th>Valor</th>
           </tr>
         </ng-template>
@@ -57,12 +58,14 @@
             }
             <td>{{ retorno.despesa.descricao }}</td>
             <td>{{ retorno.despesa.categoria.nome }}</td>
+            <td>{{ retorno.despesa.data | date: 'dd/MM' }}</td>
             <td>
               {{
                 (retorno.totalParcela > 0 ? retorno.valor : retorno.despesa.valor)
                   | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
               }}
             </td>
+      
           </tr>
         </ng-template>
         <ng-template #footer>
