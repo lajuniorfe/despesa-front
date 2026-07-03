@@ -16,8 +16,9 @@ export class InvestimentoService {
   listarInvestimentos(): Observable<InvestimentoResponse[]> {
     return this.http.get<InvestimentoResponse[]>(`${this.caminho}`);
   }
-  
+
   cadastrarInvestimento(request:InvestimentoRequest): Observable<InvestimentoResponse> {
-    return this.http.post<InvestimentoResponse>(`${this.caminho}`, request);
-  }
+    return this.http.post<InvestimentoResponse>(`${this.caminho}`, request);  
+    
+  } 
 }
