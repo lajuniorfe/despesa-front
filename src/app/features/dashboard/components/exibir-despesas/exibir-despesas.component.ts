@@ -38,7 +38,6 @@ export class ExibirDespesasComponent {
   valorTotalCasal = 0;
   selectedDespesa: any | null = null;
 
-
   constructor(private readonly tokenService: TokenService) {}
 
   ngOnChanges() {
@@ -62,11 +61,9 @@ export class ExibirDespesasComponent {
         0,
       );
     }
-
-    console.log('Lista de Despesas Recebida:', this.listaDespesasIndividuais);
   }
 
- onRowSelect(event: any): void {
-  this.abrirDetalhesDespesaEmitir.emit(event.data);
-}
+  onRowSelect(event: any): void {
+    this.abrirDetalhesDespesaEmitir.emit(event.data);
+  }
 }
