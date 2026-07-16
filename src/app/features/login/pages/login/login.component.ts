@@ -57,6 +57,7 @@ export class LoginComponent {
           summary: 'Error',
           detail: 'Erro ao logar',
         });
+        this.carregando = false;
       },
     });
   }
