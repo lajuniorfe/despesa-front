@@ -69,35 +69,43 @@ export class HomeComponent {
     this.usuario = this.tokenService.obterUsuarioLogado();
     this.loadingService.show();
 
-    this.despesaService.listarDespesasMesInformado(mesAtual, anoAtual).subscribe({
-      next: (retorno: DespesaRelacionamentoResponse[]) => {
-        const listaDespesas = retorno.filter((d) => d.despesa.categoria.tipo !== 5);
-        const listaReceitas = retorno.filter((d) => d.despesa.categoria.tipo === 5);
+    this.despesaService
+      .listarDespesasMesInformado(mesAtual, anoAtual)
+      .subscribe({
+        next: (retorno: DespesaRelacionamentoResponse[]) => {
+          const listaDespesas = retorno.filter(
+            (d) => d.despesa.categoria.tipo !== 5,
+          );
+          const listaReceitas = retorno.filter(
+            (d) => d.despesa.categoria.tipo === 5,
+          );
 
-        this.listaDespesaMesAtual = listaDespesas;
+          this.listaDespesaMesAtual = listaDespesas;
 
-        this.receitasMesAtual = this.calcularReceitaCasal(listaReceitas);
-        this.receitaIndividual = this.calcularReceitaIndividual(listaReceitas);
-        this.valorTotalDespesasMes = this.calcularValorTotalDespesasUsuario(1);
+          this.receitasMesAtual = this.calcularReceitaCasal(listaReceitas);
+          this.receitaIndividual =
+            this.calcularReceitaIndividual(listaReceitas);
+          this.valorTotalDespesasMes =
+            this.calcularValorTotalDespesasUsuario(1);
 
-        sessionStorage.setItem('despesas', JSON.stringify(this.listaDespesaMesAtual));
+          this.valorTotalDespesasIndividuais =
+            this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
 
-        this.valorTotalDespesasIndividuais =
-          this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
+          this.saldoPrevisto = this.calcularSaldoConjunto(
+            this.valorTotalDespesasMes,
+          );
+          this.saldoIndividual = this.calcularSaldoIndividual(
+            this.saldoPrevisto,
+            this.valorTotalDespesasIndividuais,
+          );
 
-        this.saldoPrevisto = this.calcularSaldoConjunto(this.valorTotalDespesasMes);
-        this.saldoIndividual = this.calcularSaldoIndividual(
-          this.saldoPrevisto,
-          this.valorTotalDespesasIndividuais,
-        );
-
-        this.agruparDespesasFaturaCartao();
-        this.loadingService.hide();
-      },
-      error: (erro) => {
-        this.loadingService.hide();
-      },
-    });
+          this.agruparDespesasFaturaCartao();
+          this.loadingService.hide();
+        },
+        error: (erro) => {
+          this.loadingService.hide();
+        },
+      });
   }
 
   calcularValorTotalDespesasUsuario(idUsuario: number) {
@@ -172,7 +180,10 @@ export class HomeComponent {
       this.listaDespesaMesAtual = [...this.listaDespesaMesAtual, despesa];
 
       this.agruparDespesasFaturaCartao();
-      sessionStorage.setItem('despesas', JSON.stringify(this.listaDespesaMesAtual));
+      sessionStorage.setItem(
+        'despesas',
+        JSON.stringify(this.listaDespesaMesAtual),
+      );
     }
 
     if (despesa.despesa.usuario.id === 1) {
@@ -223,7 +234,8 @@ export class HomeComponent {
     const despesaCasal = this.calcularValorTotalDespesasUsuario(1);
     const SaldoConjunto = this.calcularSaldoConjunto(despesaCasal);
 
-    const despesaUsuarioLogado = this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
+    const despesaUsuarioLogado =
+      this.calcularValorTotalDespesasIndividuaisUsuarioLogado();
 
     this.saldoIndividualUsuarioLogado = this.calcularSaldoIndividual(
       SaldoConjunto,
@@ -250,7 +262,7 @@ export class HomeComponent {
     this.buscarDespesasMesAtual(mesAtual, anoAtual);
   }
 
-  fecharDetalheFatura(){
+  fecharDetalheFatura() {
     const mesAtual = new Date().getMonth() + 1;
     const anoAtual = new Date().getFullYear();
     this.exbirDetalheDespesa = false;

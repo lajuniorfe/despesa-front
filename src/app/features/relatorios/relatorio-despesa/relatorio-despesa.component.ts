@@ -66,12 +66,14 @@ export class RelatorioDespesaComponent {
   totalGastoEmergencial = 0;
   total = 0;
 
-  constructor(private readonly tokenService: TokenService, 
-    private readonly despesasService: DespesasService) {}
+  constructor(
+    private readonly tokenService: TokenService,
+    private readonly despesasService: DespesasService,
+  ) {}
 
   ngOnInit() {
     this.buscarReceita();
-    this.listaDespesasOriginal = JSON.parse(sessionStorage.getItem('despesas') || '[]');
+    this.listaDespesasOriginal = JSON.parse('[]');
     this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
 
     this.mesAtual = new Date(this.listaDespesasOriginal[0].data)
@@ -83,11 +85,15 @@ export class RelatorioDespesaComponent {
       .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
     this.gastoTotalNaoEssencial = this.listaDespesasMesAtual
-      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.NaoEssencial)
+      .filter(
+        (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.NaoEssencial,
+      )
       .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
     this.gastoTotalInvestimento = this.listaDespesasMesAtual
-      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Investimento)
+      .filter(
+        (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Investimento,
+      )
       .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
     this.totalGastoEmergencial = this.listaDespesasMesAtual
@@ -103,7 +109,9 @@ export class RelatorioDespesaComponent {
     if (this.listaDespesasMesAtual) {
       this.listaDespesasMesAtual = this.checarDespesaUsuario
         ? this.listaDespesasOriginal.filter(
-            (d) => d.despesa.usuario.id === this.tokenService.obterUsuarioLogado().id,
+            (d) =>
+              d.despesa.usuario.id ===
+              this.tokenService.obterUsuarioLogado().id,
           )
         : this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1);
 
@@ -119,22 +127,26 @@ export class RelatorioDespesaComponent {
     }
   }
 
-  buscarReceita(){
-    this.despesasService.listarReceitas().subscribe((response:DespesaRequest[]) => {
-      this.receita = response[0].valor;
-      this.limiteEssencial = this.receita * 0.5 * 100;
-      this.limiteNaoEssencial = this.receita * 0.3 * 100;
-      this.limiteInvestimento = this.receita * 0.2 * 100;
-    });
+  buscarReceita() {
+    this.despesasService
+      .listarReceitas()
+      .subscribe((response: DespesaRequest[]) => {
+        this.receita = response[0].valor;
+        this.limiteEssencial = this.receita * 0.5 * 100;
+        this.limiteNaoEssencial = this.receita * 0.3 * 100;
+        this.limiteInvestimento = this.receita * 0.2 * 100;
+      });
   }
-
 
   atualizarRelatorio() {
     const categoriasMapGlobal = new Map<number, CategoriaResponse>();
     const tiposMap = new Map<number, TreeNode>();
 
     const totalGeral =
-      this.listaDespesasMesAtual.reduce((acc, l) => acc + Math.round(l.valor * 100), 0) / 100;
+      this.listaDespesasMesAtual.reduce(
+        (acc, l) => acc + Math.round(l.valor * 100),
+        0,
+      ) / 100;
 
     this.listaDespesasMesAtual.forEach((l) => {
       const categoria = l.despesa.categoria;
@@ -144,7 +156,9 @@ export class RelatorioDespesaComponent {
       this.listaDespesasMesAtual = this.checarDespesaUsuario
         ? this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1)
         : this.listaDespesasOriginal.filter(
-            (d) => d.despesa.usuario.id === this.tokenService.obterUsuarioLogado().id,
+            (d) =>
+              d.despesa.usuario.id ===
+              this.tokenService.obterUsuarioLogado().id,
           );
 
       if (!categoriasMapGlobal.has(categoria.id)) {
@@ -155,7 +169,12 @@ export class RelatorioDespesaComponent {
         tiposMap.set(tipo, {
           label: `${TipoCategoriaUtilService.formatar(TipoCategoriaEnum[tipo])}`,
           children: [],
-          data: { total: 0, categoriasMap: new Map<number, TreeNode>(), tipo: tipo, percentual: 0 },
+          data: {
+            total: 0,
+            categoriasMap: new Map<number, TreeNode>(),
+            tipo: tipo,
+            percentual: 0,
+          },
           expanded: tipo === 1,
         });
       }
@@ -247,7 +266,10 @@ export class RelatorioDespesaComponent {
 
       tipoNode.children?.forEach((categoriaNode: any) => {
         const totalCategoria = categoriaNode.data.total;
-        categoriaNode.data.percentual = this.calcularPercentual(totalTipo, totalCategoria);
+        categoriaNode.data.percentual = this.calcularPercentual(
+          totalTipo,
+          totalCategoria,
+        );
       });
     });
   }

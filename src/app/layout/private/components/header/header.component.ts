@@ -49,7 +49,6 @@ export class HeaderComponent {
   }
 
   deslogar() {
-    sessionStorage.removeItem('despesas');
     sessionStorage.removeItem('token');
 
     this.router.navigate(['/login']);
