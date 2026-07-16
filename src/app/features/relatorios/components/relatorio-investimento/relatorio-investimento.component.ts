@@ -1,9 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InvestimentoService } from '../../services/investimento.service';
 import { InvestimentoRequest } from '../../models/investimento-request.model';
+import { InvestimentoResponse } from '../../models/investimento.model';
 
 @Component({
   selector: 'app-relatorio-investimento',
@@ -12,36 +13,45 @@ import { InvestimentoRequest } from '../../models/investimento-request.model';
   styleUrl: './relatorio-investimento.component.css',
 })
 export class RelatorioInvestimentoComponent {
-  investimentoEmergencia: number = 0;
-  investimento: number = 0;
-  totalRetirada: number = 0;
+  investimentoEmergencia = 0;
+  investimento = 0;
+  totalRetirada = 0;
 
- constructor(private readonly investimentoService: InvestimentoService) {}
+  constructor(private readonly investimentoService: InvestimentoService, private readonly cd: ChangeDetectorRef) {}
 
- ngOnInit() {
-  this.buscarInvestimentos();
- }
+  ngOnInit() {
+    this.buscarInvestimentos();
+  }
 
-  buscarInvestimentos(){
-    this.investimentoService.listarInvestimentos().subscribe((investimentos) => {
+  private buscarInvestimentos(): void {
+    this.investimentoService
+      .listarInvestimentos()
+      .subscribe((investimentos) => {
+        this.calcular(investimentos);
+      });
+  }
 
+  private calcular(investimentos: InvestimentoResponse[]): void {
+    Promise.resolve().then(() => {
       this.investimento = investimentos.filter((i) => i.tipo !== 2).reduce((total, investimento) => total + investimento.valor, 0);
-     
-      this.investimentoEmergencia = investimentos.filter((i) => i.tipo === 0)
-       .reduce((total, investimento) => total + investimento.valor, 0);
 
-      this.totalRetirada = investimentos.filter((i) => i.tipo === 2)
-       .reduce((total, investimento) => total + investimento.valor, 0);
+      this.investimentoEmergencia = investimentos.filter((i) => i.tipo === 0).reduce((total, investimento) => total + investimento.valor, 0);
 
+      this.totalRetirada = investimentos.filter((i) => i.tipo === 2).reduce((total, investimento) => total + investimento.valor, 0);
 
+      try {
+        this.cd.detectChanges();
+      } catch {
+        // ignore
+      }
     });
   }
 
-  cadastrarInvestimento(){
-    let request = new InvestimentoRequest();
+  cadastrarInvestimento(): void {
+    const request = new InvestimentoRequest();
 
-    this.investimentoService.cadastrarInvestimento(request)
-    .subscribe((response) => {
+    this.investimentoService.cadastrarInvestimento(request).subscribe(() => {
+      // Atualiza cache/tela depois de cadastrar
       this.buscarInvestimentos();
     });
   }

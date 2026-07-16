@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  inject,
+  Input,
+  PLATFORM_ID,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -44,8 +50,8 @@ import { DespesaRequest } from '../../despesas/models/despesa-request.model';
 })
 export class RelatorioDespesaComponent {
   @Input() mesAtual!: string;
-  listaDespesasMesAtual!: DespesaRelacionamentoResponse[];
-  listaDespesasOriginal!: DespesaRelacionamentoResponse[];
+  listaDespesasMesAtual: DespesaRelacionamentoResponse[] = [];
+  listaDespesasOriginal: DespesaRelacionamentoResponse[] = [];
   categorias: CategoriaResponse[] = [];
   arvores: TreeNode[] | null = null;
   data: any | null = null;
@@ -69,72 +75,104 @@ export class RelatorioDespesaComponent {
   constructor(
     private readonly tokenService: TokenService,
     private readonly despesasService: DespesasService,
+    private readonly cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     this.buscarReceita();
-    this.listaDespesasOriginal = JSON.parse('[]');
-    this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
+    this.despesasService
+      .listarDespesasMesInformado(7, 2026)
+      .subscribe((retorno) => {
+        Promise.resolve().then(() => {
+          this.listaDespesasOriginal = retorno;
+          this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
 
-    this.mesAtual = new Date(this.listaDespesasOriginal[0].data)
-      .toLocaleDateString('pt-BR', { month: 'long' })
-      .replace(/^./, (letra) => letra.toUpperCase());
+          this.mesAtual = new Date(this.listaDespesasOriginal[0].data)
+            .toLocaleDateString('pt-BR', { month: 'long' })
+            .replace(/^./, (letra) => letra.toUpperCase());
 
-    this.gastoTotalEssencial = this.listaDespesasMesAtual
-      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Essencial)
-      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+          this.gastoTotalEssencial = this.listaDespesasMesAtual
+            .filter(
+              (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Essencial,
+            )
+            .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
-    this.gastoTotalNaoEssencial = this.listaDespesasMesAtual
-      .filter(
-        (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.NaoEssencial,
-      )
-      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+          this.gastoTotalNaoEssencial = this.listaDespesasMesAtual
+            .filter(
+              (l) =>
+                l.despesa.categoria.tipo === TipoCategoriaEnum.NaoEssencial,
+            )
+            .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
-    this.gastoTotalInvestimento = this.listaDespesasMesAtual
-      .filter(
-        (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Investimento,
-      )
-      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+          this.gastoTotalInvestimento = this.listaDespesasMesAtual
+            .filter(
+              (l) =>
+                l.despesa.categoria.tipo === TipoCategoriaEnum.Investimento,
+            )
+            .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
-    this.totalGastoEmergencial = this.listaDespesasMesAtual
-      .filter((l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Emergencial)
-      .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
+          this.totalGastoEmergencial = this.listaDespesasMesAtual
+            .filter(
+              (l) => l.despesa.categoria.tipo === TipoCategoriaEnum.Emergencial,
+            )
+            .reduce((acc, l) => acc + Math.round(l.valor * 100), 0);
 
-    this.total =
-      this.gastoTotalEssencial +
-      this.gastoTotalNaoEssencial +
-      this.gastoTotalInvestimento +
-      this.totalGastoEmergencial;
+          this.total =
+            this.gastoTotalEssencial +
+            this.gastoTotalNaoEssencial +
+            this.gastoTotalInvestimento +
+            this.totalGastoEmergencial;
 
-    if (this.listaDespesasMesAtual) {
-      this.listaDespesasMesAtual = this.checarDespesaUsuario
-        ? this.listaDespesasOriginal.filter(
-            (d) =>
-              d.despesa.usuario.id ===
-              this.tokenService.obterUsuarioLogado().id,
-          )
-        : this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1);
+          if (this.listaDespesasMesAtual) {
+            this.listaDespesasMesAtual = this.checarDespesaUsuario
+              ? this.listaDespesasOriginal.filter(
+                  (d) =>
+                    d.despesa.usuario.id ===
+                    this.tokenService.obterUsuarioLogado().id,
+                )
+              : this.listaDespesasOriginal.filter(
+                  (d) => d.despesa.usuario.id === 1,
+                );
 
-      const total = this.listaDespesasMesAtual.reduce(
-        (acc, l) => acc + Math.round(l.valor * 100),
-        0,
-      );
+            const total = this.listaDespesasMesAtual.reduce(
+              (acc, l) => acc + Math.round(l.valor * 100),
+              0,
+            );
 
-      const totalFinal = total / 100;
-      this.totalDespesas = totalFinal;
+            const totalFinal = total / 100;
+            this.totalDespesas = totalFinal;
 
-      this.atualizarRelatorio();
-    }
+            this.atualizarRelatorio();
+          }
+
+          try {
+            this.cd.detectChanges();
+          } catch (e) {
+            // ignore
+          }
+        });
+      });
   }
 
   buscarReceita() {
     this.despesasService
       .listarReceitas()
       .subscribe((response: DespesaRequest[]) => {
-        this.receita = response[0].valor;
-        this.limiteEssencial = this.receita * 0.5 * 100;
-        this.limiteNaoEssencial = this.receita * 0.3 * 100;
-        this.limiteInvestimento = this.receita * 0.2 * 100;
+        const receita = response?.[0]?.valor ?? 0;
+
+        Promise.resolve().then(() => {
+          this.receita = receita;
+
+          this.limiteEssencial = receita * 0.5 * 100;
+          this.limiteNaoEssencial = receita * 0.3 * 100;
+          this.limiteInvestimento = receita * 0.2 * 100;
+
+          try {
+            this.cd.detectChanges();
+          } catch (e) {
+            // ignore if view destroyed
+          }
+        });
       });
   }
 
@@ -157,8 +195,7 @@ export class RelatorioDespesaComponent {
         ? this.listaDespesasOriginal.filter((d) => d.despesa.usuario.id === 1)
         : this.listaDespesasOriginal.filter(
             (d) =>
-              d.despesa.usuario.id ===
-              this.tokenService.obterUsuarioLogado().id,
+              d.despesa.usuario.id == this.tokenService.obterUsuarioLogado().id,
           );
 
       if (!categoriasMapGlobal.has(categoria.id)) {
@@ -234,15 +271,10 @@ export class RelatorioDespesaComponent {
     const tipoInicial = this.arvores.find((t) => t.data?.tipo === 1);
 
     if (tipoInicial) {
-      this.tipoGraficoExbido = 'Essêncial';
+      this.tipoGraficoExbido = 'Essencial';
 
       this.Node = tipoInicial;
     }
-  }
-
-  filtrarDespesaUsuario() {
-    this.checarDespesaUsuario = !this.checarDespesaUsuario;
-    this.atualizarRelatorio();
   }
 
   selecionado(node: any) {
@@ -290,7 +322,11 @@ export class RelatorioDespesaComponent {
     return (this.totalGastoEmergencial / 100 / this.receita) * 100;
   }
 
-  get porcentagemUsoRenda() {
+  get porcentagemUsoRenda(): number {
+    if (!this.receita) {
+      return 0;
+    }
+
     return (this.total / 100 / this.receita) * 100;
   }
 }

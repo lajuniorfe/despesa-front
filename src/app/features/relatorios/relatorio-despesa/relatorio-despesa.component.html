@@ -36,9 +36,10 @@
               </div>
               <div class="flex align-items-center justify-content-center ml-6">
                 <p-togglebutton
-                  onLabel="Individual"
+                  [(ngModel)]="checarDespesaUsuario"
+                  onLabel="Individuais"
                   offLabel="Conjuntas"
-                  (onChange)="filtrarDespesaUsuario()"
+                  (onChange)="atualizarRelatorio()"
                   class="w-24 text-color bg-primary"
                 />
               </div>

@@ -6,8 +6,8 @@ import { Injectable } from '@angular/core';
 export class TipoCategoriaUtilService {
   static formatar(label: string): string {
     const mapa: Record<string, string> = {
-      Essencial: 'Essêncial',
-      NaoEssencial: 'Não Essêncial',
+      Essencial: 'Essencial',
+      NaoEssencial: 'Não Essencial',
       Investimento: 'Investimento',
       Emergencial: 'Emergencial',
     };
