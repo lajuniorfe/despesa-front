@@ -122,13 +122,13 @@ export class HomeComponent {
 
   calcularReceitaIndividual(receitas: DespesaRelacionamentoResponse[]) {
     return (receitas || [])
-      .filter((d) => d.despesa.usuario.id == this.usuario.id)
+      .filter((d) => d.despesa.usuario.id == this.usuario?.id)
       .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
   }
 
   calcularValorTotalDespesasIndividuaisUsuarioLogado() {
     return (this.listaDespesaMesAtual || [])
-      .filter((d) => d.despesa.usuario.id == this.usuario.id)
+      .filter((d) => d.despesa.usuario.id == this.usuario?.id)
       .reduce((total, despesa) => total + Number(despesa.valor || 0), 0);
   }
 

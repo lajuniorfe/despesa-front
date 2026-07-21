@@ -34,8 +34,6 @@ export class TokenService {
             nome: usuario.nome ?? account.username,
             id: usuario.id,
           };
-          console.log('usuario logado?', usuarioAutenticado);
-
           sessionStorage.setItem('user', JSON.stringify(usuarioAutenticado));
         });
     }

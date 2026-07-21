@@ -26,6 +26,21 @@ export class App implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.authService.instance
+      .handleRedirectPromise()
+      .then((result) => {
+        if (result?.account) {
+          this.authService.instance.setActiveAccount(result.account);
+
+          this.router.navigate(['/']);
+        } else {
+          this.checkAndSetActiveAccount();
+        }
+      })
+      .catch((error) => {
+        console.error('Erro no redirect MSAL:', error);
+      });
+
     // --------------------------------------------------------------------
     // Esse observable informa quando a MSAL terminou qualquer interação.
     //
@@ -82,25 +97,18 @@ export class App implements OnInit, OnDestroy {
   }
 
   checkAndSetActiveAccount(): void {
-    // Obtém a conta ativa.
     const activeAccount = this.authService.instance.getActiveAccount();
 
-    // Se ainda não existir uma conta ativa...
-    if (
-      !activeAccount &&
-      this.authService.instance.getAllAccounts().length > 0
-    ) {
-      // Recupera todas as contas armazenadas
-      // no cache da MSAL.
-      const accounts = this.authService.instance.getAllAccounts();
+    if (activeAccount) {
+      return;
+    }
 
-      // Define a primeira como ativa.
-      // Isso normalmente acontece quando
-      // a aplicação é recarregada (F5).
+    const accounts = this.authService.instance.getAllAccounts();
+
+    if (accounts.length > 0) {
       this.authService.instance.setActiveAccount(accounts[0]);
     }
   }
-
   ngOnDestroy(): void {
     this._destroying$.next();
     this._destroying$.complete();
