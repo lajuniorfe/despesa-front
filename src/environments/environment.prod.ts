@@ -6,5 +6,5 @@ export const environment = {
 
   apiScope: 'api://9b94654b-c97e-40b7-b3e6-df94eec57a26/access_as_user',
 
-  uriFront: 'https://lajuniorfe.github.io/despesa-front',
+  uriFront: 'https://lajuniorfe.github.io/despesa-front/',
 };
