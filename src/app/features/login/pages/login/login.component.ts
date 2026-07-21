@@ -32,7 +32,7 @@ export class LoginComponent {
     console.log('ENV FRONT:', environment.uriFront);
     this.authService.loginRedirect({
       ...loginRequest,
-      redirectStartPage: window.location.origin,
+      redirectStartPage: environment.uriFront,
     });
   }
 }
