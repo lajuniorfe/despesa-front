@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { MenuItem } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Divider } from 'primeng/divider';
@@ -26,7 +27,10 @@ export class HeaderComponent {
   items!: MenuItem[];
   menuAberto: boolean = false;
 
-  constructor(private readonly router: Router) {
+  constructor(
+    private readonly router: Router,
+    private authService: MsalService,
+  ) {
     this.router.events.subscribe(() => {
       this.menuAberto = false;
     });
@@ -49,9 +53,7 @@ export class HeaderComponent {
   }
 
   deslogar() {
-    sessionStorage.removeItem('token');
-
-    this.router.navigate(['/login']);
+    this.authService.logoutRedirect();
   }
 
   toggleMenu() {

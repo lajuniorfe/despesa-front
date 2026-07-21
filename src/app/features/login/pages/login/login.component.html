@@ -2,26 +2,16 @@
   <div class="card w-20rem">
     <h2 class="text-center mb-4">Login</h2>
 
-    <form [formGroup]="formulario" (ngSubmit)="logar()">
-      <div class="field mb-3">
-        <label for="login">Login</label>
-        <input id="login" type="text" pInputText formControlName="login" class="w-full" />
-      </div>
-
-      <div class="field mb-4">
-        <label for="senha">Senha</label>
-        <input id="senha" type="password" pInputText formControlName="senha" class="w-full" />
-      </div>
-
       <p-button
         label="Entrar"
         icon="pi pi-sign-in"
         styleClass="w-full p-button-success"
         type="submit"
+        (click)="logar()"
         [loading]="carregando"
       >
       </p-button>
-    </form>
+  
   </div>
 </div>
 <p-toast />

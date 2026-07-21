@@ -7,6 +7,7 @@ import { PagamentoComponent } from './features/pagamentos/components/pagamento.c
 import { RelatorioDespesaComponent } from './features/relatorios/relatorio-despesa/relatorio-despesa.component';
 import { PrivateLayoutComponent } from './layout/private/private-layout';
 import { PublicLayoutComponent } from './layout/public/public-layout';
+import { MsalGuard } from '@azure/msal-angular';
 
 export const routes: Routes = [
   {
@@ -18,24 +19,33 @@ export const routes: Routes = [
   {
     path: '',
     component: PrivateLayoutComponent,
-    children: [{ path: '', component: HomeComponent, canActivate: [AuthGuard] }],
+    canActivate: [MsalGuard],
+    children: [{ path: '', component: HomeComponent }],
   },
 
   {
     path: 'relatorios',
     component: PrivateLayoutComponent,
-    children: [{ path: '', component: RelatorioDespesaComponent, canActivate: [AuthGuard] }],
+    canActivate: [MsalGuard],
+    children: [
+      {
+        path: '',
+        component: RelatorioDespesaComponent,
+      },
+    ],
   },
 
   {
     path: 'pagamentos',
     component: PrivateLayoutComponent,
-    children: [{ path: '', component: PagamentoComponent, canActivate: [AuthGuard] }],
+    canActivate: [MsalGuard],
+    children: [{ path: '', component: PagamentoComponent }],
   },
 
   {
     path: 'desejos',
     component: PrivateLayoutComponent,
-    children: [{ path: '', component: DesejoComponent, canActivate: [AuthGuard] }],
+    canActivate: [MsalGuard],
+    children: [{ path: '', component: DesejoComponent }],
   },
 ];

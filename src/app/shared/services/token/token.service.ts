@@ -1,36 +1,43 @@
 import { Injectable } from '@angular/core';
 import { UsuarioResponse } from '../../../features/usuarios/models/usuario-response.model';
+import { AuthService } from '../../../features/login/services/auth.service';
+import { MsalService } from '@azure/msal-angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
+  constructor(
+    private readonly authService: AuthService,
+    private msalService: MsalService,
+  ) {}
+
   obterUsuarioLogado(): UsuarioResponse {
-    const token = sessionStorage.getItem('token');
+    const usuario = JSON.parse(
+      sessionStorage.getItem('user')!,
+    ) as UsuarioResponse;
 
-    if (token) {
-      const payload = this.getPayloadFromToken(token);
-      const usuarioAutenticado: UsuarioResponse = {
-        nome: payload.sub,
-        id: payload.jti,
-      };
-
-      return usuarioAutenticado;
+    if (!usuario) {
+      this.incluirUsuarioSessao();
     }
 
-    throw new Error('Nenhum usuário logado');
+    return usuario;
   }
 
-  private getPayloadFromToken(token: string): any {
-    const payloadBase64Url = token.split('.')[1];
-    const payloadBase64 = payloadBase64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const payloadJson = decodeURIComponent(
-      atob(payloadBase64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join(''),
-    );
+  incluirUsuarioSessao() {
+    let account = this.msalService.instance.getActiveAccount();
+    if (account) {
+      this.authService
+        .buscarUsuarioIdAzure(account.localAccountId)
+        .subscribe((usuario) => {
+          const usuarioAutenticado: UsuarioResponse = {
+            nome: usuario.nome ?? account.username,
+            id: usuario.id,
+          };
+          console.log('usuario logado?', usuarioAutenticado);
 
-    return JSON.parse(payloadJson);
+          sessionStorage.setItem('user', JSON.stringify(usuarioAutenticado));
+        });
+    }
   }
 }

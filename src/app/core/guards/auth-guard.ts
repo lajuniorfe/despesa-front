@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private msalService: MsalService,
+  ) {}
 
   canActivate(): boolean {
-    const token = sessionStorage.getItem('token');
-
-    if (token && !this.isTokenExpired(token)) {
-      return true;
-    } else {
-      sessionStorage.clear();
-      this.router.navigate(['/login']);
-      return false;
-    }
+    const account = this.msalService.instance.getActiveAccount();
+    return true;
   }
 
   private isTokenExpired(token: string): boolean {

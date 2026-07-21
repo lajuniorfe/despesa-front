@@ -180,10 +180,10 @@ export class HomeComponent {
       this.listaDespesaMesAtual = [...this.listaDespesaMesAtual, despesa];
 
       this.agruparDespesasFaturaCartao();
-      sessionStorage.setItem(
-        'despesas',
-        JSON.stringify(this.listaDespesaMesAtual),
-      );
+      // sessionStorage.setItem(
+      //   'despesas',
+      //   JSON.stringify(this.listaDespesaMesAtual),
+      // );
     }
 
     if (despesa.despesa.usuario.id === 1) {

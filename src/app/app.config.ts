@@ -1,14 +1,66 @@
 import { registerLocaleData } from '@angular/common';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
-import { ApplicationConfig } from '@angular/core';
-import { provideRouter, withHashLocation } from '@angular/router';
+import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
+
 import { routes } from './app.routes';
-import { AuthInterceptor } from './core/interceptors/auth-interceptor';
+import { loginRequest, msalConfig } from './auth-config';
+
+import {
+  MSAL_GUARD_CONFIG,
+  MSAL_INSTANCE,
+  MSAL_INTERCEPTOR_CONFIG,
+  MsalBroadcastService,
+  MsalGuard,
+  MsalGuardConfiguration,
+  MsalInterceptorConfiguration,
+  MsalService,
+} from '@azure/msal-angular';
+
+import {
+  InteractionType,
+  IPublicClientApplication,
+  PublicClientApplication,
+} from '@azure/msal-browser';
+import { AuthInterceptor } from './core/interceptor/auth-interceptor';
+import { environment } from '../environments/environment';
+
+const msalInstance = new PublicClientApplication(msalConfig);
+
+export function initializeMsal(): () => Promise<void> {
+  return () => msalInstance.initialize();
+}
 
 registerLocaleData(localePt, 'pt-BR');
+
+export function MSALInstanceFactory(): IPublicClientApplication {
+  return msalInstance;
+}
+
+export function MsalGuardConfigurationFactory(): MsalGuardConfiguration {
+  return {
+    interactionType: InteractionType.Redirect,
+    authRequest: loginRequest,
+  };
+}
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const protectedResourceMap = new Map<string, Array<string>>();
+
+  protectedResourceMap.set(environment.serverUrl, [environment.apiScope]);
+
+  return {
+    interactionType: InteractionType.Popup,
+    protectedResourceMap,
+  };
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,45 +71,36 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: '.dark',
         },
       },
-      translation: {
-        accept: 'Aceitar',
-        reject: 'Rejeitar',
-        today: 'Hoje',
-        clear: 'Limpar',
-        dayNames: ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'],
-        dayNamesShort: ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'],
-        dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-        monthNames: [
-          'janeiro',
-          'fevereiro',
-          'março',
-          'abril',
-          'maio',
-          'junho',
-          'julho',
-          'agosto',
-          'setembro',
-          'outubro',
-          'novembro',
-          'dezembro',
-        ],
-        monthNamesShort: [
-          'jan',
-          'fev',
-          'mar',
-          'abr',
-          'mai',
-          'jun',
-          'jul',
-          'ago',
-          'set',
-          'out',
-          'nov',
-          'dez',
-        ],
-      },
     }),
-    provideRouter(routes, withHashLocation()),
-    provideHttpClient(withInterceptors([AuthInterceptor])),
+
+    provideRouter(routes),
+
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory,
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MsalGuardConfigurationFactory,
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeMsal,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+
+    MsalService,
+    MsalBroadcastService,
+    MsalGuard,
   ],
 };

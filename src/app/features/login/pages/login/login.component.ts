@@ -1,64 +1,36 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { AutenticarRequest } from '../../models/autenticar-request.model';
-import { AuthService } from '../../services/auth.service';
+import { MsalService } from '@azure/msal-angular';
+import { loginRequest } from '../../../../auth-config';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, InputTextModule, ReactiveFormsModule, ButtonModule, ToastModule],
+  imports: [
+    ReactiveFormsModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    ButtonModule,
+    ToastModule,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   providers: [MessageService],
 })
 export class LoginComponent {
-  formulario!: FormGroup;
-  carregando: boolean = false;
-  private messageService = inject(MessageService);
+  carregando = false;
 
-  constructor(
-    private readonly authService: AuthService,
-    private fb: FormBuilder,
-    private readonly router: Router,
-  ) {}
+  constructor(private authService: MsalService) {}
 
-  ngOnInit() {
-    this.formulario = this.fb.group({
-      login: ['', Validators.required],
-      senha: ['', Validators.required],
-    });
-  }
+  ngOnInit(): void {}
 
-  logar() {
-    this.carregando = true;
-    if (this.formulario.invalid) return;
-
-    const loginUsuario = this.formulario.value.login;
-    const senhaUsuario = this.formulario.value.senha;
-
-    const request: AutenticarRequest = {
-      login: loginUsuario,
-      senha: senhaUsuario,
-    };
-
-    this.authService.logar(request).subscribe({
-      next: (retorno) => {
-        sessionStorage.setItem('token', retorno.token);
-        this.carregando = false;
-        this.router.navigate(['']);
-      },
-      error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Erro ao logar',
-        });
-        this.carregando = false;
-      },
+  logar(): void {
+    this.authService.loginRedirect({
+      ...loginRequest,
+      redirectStartPage: window.location.origin,
     });
   }
 }
