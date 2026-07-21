@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
 import { APP_INITIALIZER, ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
@@ -73,7 +73,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
 
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()),
 
     provideHttpClient(withInterceptorsFromDi()),
     {
