@@ -24,7 +24,7 @@ export const msalConfig: Configuration = {
     authority:
       'https://login.microsoftonline.com/ec94cfcc-a960-4df2-b2b9-6598ba7a718f', // Replace the placeholder with your tenant subdomain
     redirectUri: environment.uriFront, // Points to window.location.origin by default. You must register this URI on Microsoft Entra admin center/App Registration.
-    postLogoutRedirectUri: `${environment.uriFront}login`, // Points to window.location.origin by default.
+    postLogoutRedirectUri: `${environment.uriFront}/login`, // Points to window.location.origin by default.
   },
 
   cache: {
