@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MsalService } from '@azure/msal-angular';
 import { loginRequest } from '../../../../auth-config';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ export class LoginComponent {
   ngOnInit(): void {}
 
   logar(): void {
+    console.log('ENV FRONT:', environment.uriFront);
     this.authService.loginRedirect({
       ...loginRequest,
       redirectStartPage: window.location.origin,

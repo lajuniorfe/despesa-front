@@ -32,7 +32,7 @@ export class App implements OnInit, OnDestroy {
         if (result?.account) {
           this.authService.instance.setActiveAccount(result.account);
 
-          this.router.navigate(['/']);
+          this.router.navigate(['']);
         } else {
           this.checkAndSetActiveAccount();
         }
