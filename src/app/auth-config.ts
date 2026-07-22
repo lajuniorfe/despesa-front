@@ -21,12 +21,10 @@ import { environment } from '../environments/environment';
 export const msalConfig: Configuration = {
   auth: {
     clientId: 'd76ef0be-c71c-4042-828d-93b0892b8151', // This is the ONLY mandatory field that you need to supply.
-    authority:
-      'https://login.microsoftonline.com/ec94cfcc-a960-4df2-b2b9-6598ba7a718f', // Replace the placeholder with your tenant subdomain
+    authority: 'https://login.microsoftonline.com/common', // Replace the placeholder with your tenant subdomain
     redirectUri: environment.uriFront, // Points to window.location.origin by default. You must register this URI on Microsoft Entra admin center/App Registration.
-    postLogoutRedirectUri: `${environment.uriFront}/login`, // Points to window.location.origin by default.
+    postLogoutRedirectUri: `${environment.uriFront}/login`,
   },
-
   cache: {
     cacheLocation: BrowserCacheLocation.LocalStorage, // Configures cache location. "sessionStorage" is more secure, but "localStorage" gives you SSO between tabs.
   },
