@@ -1,8 +1,14 @@
 <p-card header="Relatórios">
   <div class="mt-2">
     <div class="flex justify-content-center flex-wrap mb-0 pb-0">
+      <div class="flex align-items-center justify-content-center font-bold border-round">
+        <p-button icon="pi pi-chevron-left" [rounded]="true" [text]="true" (onClick)="buscarDespesaMesAnterior()" />
+      </div>
       <div class="flex align-items-center justify-content-center font-bold border-round m-0">
-        <h3>{{ mesAtual }}</h3>
+        <h3>{{ mesDespesas }}</h3>
+      </div>
+      <div class="flex align-items-center justify-content-center font-bold border-round">
+        <p-button icon="pi pi-chevron-right" [rounded]="true" [text]="true" (onClick)="buscarDespesaMesFuturo()" />
       </div>
     </div>
 

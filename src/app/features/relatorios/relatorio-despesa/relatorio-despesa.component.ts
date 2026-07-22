@@ -5,6 +5,8 @@ import {
   Input,
   PLATFORM_ID,
   ChangeDetectorRef,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TreeNode } from 'primeng/api';
@@ -26,6 +28,7 @@ import { GraficoRelatorioComponent } from '../grafico-relatorio.component/grafic
 import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/relatorio-categoria.component';
 import { DespesasService } from '../../despesas/services/despesas.service';
 import { DespesaRequest } from '../../despesas/models/despesa-request.model';
+import { LoadingService } from '../../../shared/services/loading/loading.service';
 
 @Component({
   selector: 'app-relatorio-despesa.component',
@@ -71,21 +74,36 @@ export class RelatorioDespesaComponent {
   gastoTotalInvestimento = 0;
   totalGastoEmergencial = 0;
   total = 0;
+  dataAtual = new Date();
+  mesDespesas = this.dataAtual
+    .toLocaleDateString('pt-BR', { month: 'long' })
+    .replace(/^./, (letra) => letra.toUpperCase());
 
   constructor(
     private readonly tokenService: TokenService,
     private readonly despesasService: DespesasService,
     private readonly cd: ChangeDetectorRef,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit() {
     this.buscarReceita();
+    this.buscarDespesasMesInformado();
+  }
+
+  buscarDespesasMesInformado() {
+    this.loadingService.show();
     this.despesasService
-      .listarDespesasMesInformado(7, 2026)
+      .listarDespesasMesInformado(this.dataAtual.getMonth(), 2026)
       .subscribe((retorno) => {
         Promise.resolve().then(() => {
           this.listaDespesasOriginal = retorno;
-          this.listaDespesasMesAtual = [...this.listaDespesasOriginal];
+
+          this.listaDespesasMesAtual = [
+            ...this.listaDespesasOriginal.filter(
+              (x) => x.despesa.categoria.tipo !== 5,
+            ),
+          ];
 
           this.mesAtual = new Date(this.listaDespesasOriginal[0].data)
             .toLocaleDateString('pt-BR', { month: 'long' })
@@ -128,10 +146,13 @@ export class RelatorioDespesaComponent {
               ? this.listaDespesasOriginal.filter(
                   (d) =>
                     d.despesa.usuario.id ===
-                    this.tokenService.obterUsuarioLogado().id,
+                      this.tokenService.obterUsuarioLogado().id &&
+                    d.despesa.categoria.tipo !== 5,
                 )
               : this.listaDespesasOriginal.filter(
-                  (d) => d.despesa.usuario.id === 1,
+                  (d) =>
+                    d.despesa.usuario.id === 1 &&
+                    d.despesa.categoria.tipo !== 5,
                 );
 
             const total = this.listaDespesasMesAtual.reduce(
@@ -147,8 +168,10 @@ export class RelatorioDespesaComponent {
 
           try {
             this.cd.detectChanges();
+            this.loadingService.hide();
           } catch (e) {
             // ignore
+            this.loadingService.hide();
           }
         });
       });
@@ -328,5 +351,24 @@ export class RelatorioDespesaComponent {
     }
 
     return (this.total / 100 / this.receita) * 100;
+  }
+
+  buscarDespesaMesFuturo() {
+    this.dataAtual.setMonth(this.dataAtual.getMonth() + 1);
+    this.mesDespesas = this.dataAtual
+      .toLocaleDateString('pt-BR', { month: 'long' })
+      .replace(/^./, (letra) => letra.toUpperCase());
+
+    this.buscarDespesasMesInformado();
+  }
+
+  buscarDespesaMesAnterior() {
+    this.dataAtual.setMonth(this.dataAtual.getMonth() - 1);
+    this.buscarDespesasMesInformado();
+    this.mesDespesas = this.dataAtual
+      .toLocaleDateString('pt-BR', { month: 'long' })
+      .replace(/^./, (letra) => letra.toUpperCase());
+
+    // this.dataEscolhidaRelatorioEmitt.emit(this.dataAtual);
   }
 }
