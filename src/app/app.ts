@@ -34,7 +34,7 @@ export class App implements OnInit, OnDestroy {
       .then((result) => {
         if (result?.account) {
           this.authService.instance.setActiveAccount(result.account);
-
+          //validar o usuario no banco um dia
           this.router.navigate(['']);
         } else {
           this.checkAndSetActiveAccount();
