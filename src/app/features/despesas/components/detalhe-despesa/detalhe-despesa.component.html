@@ -143,24 +143,18 @@
 
         <div class="flex gap-2 mx-auto w-fit">
           <p-button label="Cancelar" variant="text" severity="danger" (onClick)="fecharModal()" />
+          <p-button label="Excluir" variant="text" severity="danger" icon="pi pi-trash" (onClick)="excluirDespesa()" />
           <p-button
             label="Alterar"
             variant="text"
             icon="pi pi-check"
             [disabled]="!formAlterado || formulario.invalid"
-            (onClick)="alterarDespesa()"
+            (onClick)="alterarDespesa($event)"
           />
 
-           <p-button
-            label="Excluir"
-            variant="text"
-            severity="danger"
-            icon="pi pi-trash"
-            [disabled]="!formAlterado || formulario.invalid"
-            (onClick)="excluirDespesa()"
-          />
         </div>
       </form>
     </p-card>
   </div>
 </div>
+<p-confirmpopup appendTo="body" />

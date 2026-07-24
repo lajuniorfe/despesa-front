@@ -5,4 +5,7 @@ export interface AlterarDespesaRequest {
   descricao: string;
   parcela: number;
   idCartao: number;
+  idCategoria: number;
+  idUsuario: number;
+  idTipoPagamento: number;
 }
