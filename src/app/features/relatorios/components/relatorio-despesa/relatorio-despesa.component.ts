@@ -18,17 +18,17 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { Tabs, TabsModule } from 'primeng/tabs';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { TreeModule } from 'primeng/tree';
-import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
-import { TokenService } from '../../../shared/services/token/token.service';
-import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
-import { CategoriaResponse } from '../../categorias/models/categoria-response.model';
-import { DespesaRelacionamentoResponse } from '../../despesas/models/retorno-despesa.model';
-import { RelatorioInvestimentoComponent } from '../components/relatorio-investimento/relatorio-investimento.component';
-import { GraficoRelatorioComponent } from '../grafico-relatorio.component/grafico-relatorio.component';
-import { RelatorioCategoriaComponent } from '../relatorio-categoria.component/relatorio-categoria.component';
-import { DespesasService } from '../../despesas/services/despesas.service';
-import { DespesaRequest } from '../../despesas/models/despesa-request.model';
-import { LoadingService } from '../../../shared/services/loading/loading.service';
+import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
+import { TokenService } from '../../../../shared/services/token/token.service';
+import { TipoCategoriaUtilService } from '../../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
+import { CategoriaResponse } from '../../../categorias/models/categoria-response.model';
+import { DespesaRelacionamentoResponse } from '../../../despesas/models/retorno-despesa.model';
+import { RelatorioInvestimentoComponent } from '../relatorio-investimento/relatorio-investimento.component';
+import { GraficoRelatorioComponent } from '../../grafico-relatorio.component/grafico-relatorio.component';
+import { DespesasService } from '../../../despesas/services/despesas.service';
+import { DespesaRequest } from '../../../despesas/models/despesa-request.model';
+import { LoadingService } from '../../../../shared/services/loading/loading.service';
+import { RelatorioCategoriaComponent } from '../relatorio-categoria/relatorio-categoria.component';
 
 @Component({
   selector: 'app-relatorio-despesa.component',

@@ -31,6 +31,7 @@ import {
 } from '@azure/msal-browser';
 import { AuthInterceptor } from './core/interceptor/auth-interceptor';
 import { environment } from '../environments/environment';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
@@ -64,6 +65,8 @@ export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    ConfirmationService,
+    MessageService,
     providePrimeNG({
       theme: {
         preset: Aura,

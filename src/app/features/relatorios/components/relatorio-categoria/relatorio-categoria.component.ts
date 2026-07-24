@@ -3,9 +3,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
-import { TipoCategoriaEnum } from '../../../shared/enums/tipoCategora.enum';
-import { CorCategoriaService } from '../../../shared/services/utils/cor-categoria/cor-categoria.service';
-import { TipoCategoriaUtilService } from '../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
+import { CorCategoriaService } from '../../../../shared/services/utils/cor-categoria/cor-categoria.service';
+import { TipoCategoriaUtilService } from '../../../../shared/services/utils/tipo-categoria/tipo-categoria-util.service';
+import { TipoCategoriaEnum } from '../../../../shared/enums/tipoCategora.enum';
 
 @Component({
   selector: 'app-relatorio-categoria',

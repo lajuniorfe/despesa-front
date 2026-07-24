@@ -29,7 +29,6 @@ export class LoginComponent {
   ngOnInit(): void {}
 
   logar(): void {
-    console.log('ENV FRONT:', environment.uriFront);
     this.authService.loginRedirect({
       ...loginRequest,
       redirectStartPage: environment.uriFront,

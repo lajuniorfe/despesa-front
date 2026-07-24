@@ -26,9 +26,6 @@ export class App implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log('ANTES MSAL');
-    console.log(window.location.href);
-    console.log(window.location.hash);
     this.authService.instance
       .handleRedirectPromise()
       .then((result) => {
