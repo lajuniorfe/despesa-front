@@ -9,6 +9,7 @@ import {
 } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { NotificationService } from './shared/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ export class App implements OnInit, OnDestroy {
         if (result?.account) {
           this.authService.instance.setActiveAccount(result.account);
           //validar o usuario no banco um dia
+
           this.router.navigate(['']);
         } else {
           this.checkAndSetActiveAccount();

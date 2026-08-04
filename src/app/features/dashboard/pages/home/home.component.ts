@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { LoadingService } from '../../../../shared/services/loading/loading.service';
 import { TokenService } from '../../../../shared/services/token/token.service';
@@ -15,6 +15,7 @@ import { UsuarioResponse } from '../../../usuarios/models/usuario-response.model
 import { ExibirCartoes } from '../../components/exibir-cartoes/exibir-cartoes';
 import { ExibirDespesasComponent } from '../../components/exibir-despesas/exibir-despesas.component';
 import { Principal } from '../../components/principal/principal';
+import { NotificationService } from '../../../../shared/services/notifications/notifications.service';
 @Component({
   selector: 'app-home',
   imports: [
@@ -51,17 +52,20 @@ export class HomeComponent {
   saldoIndividualUsuarioOffline: number = 0;
   exbirDetalheDespesa: boolean = false;
   despesaDetalhar!: DespesaRelacionamentoResponse;
+  dataEscolhida: Date = new Date();
 
   constructor(
     private readonly despesaService: DespesasService,
     private loadingService: LoadingService,
     private readonly tokenService: TokenService,
+    private notifications: NotificationService,
   ) {}
 
   ngOnInit() {
-    const mesAtual = new Date().getMonth() + 1;
-    const anoAtual = new Date().getFullYear();
-
+    const dataAtual = new Date();
+    const mesAtual = dataAtual.getMonth() + 1;
+    const anoAtual = dataAtual.getFullYear();
+    this.notifications.connect();
     this.buscarDespesasMesAtual(mesAtual, anoAtual);
   }
 
@@ -178,12 +182,7 @@ export class HomeComponent {
 
     if (dataDespesa.getMonth() === dataLista.getMonth()) {
       this.listaDespesaMesAtual = [...this.listaDespesaMesAtual, despesa];
-
       this.agruparDespesasFaturaCartao();
-      // sessionStorage.setItem(
-      //   'despesas',
-      //   JSON.stringify(this.listaDespesaMesAtual),
-      // );
     }
 
     if (despesa.despesa.usuario.id === 1) {
@@ -253,13 +252,15 @@ export class HomeComponent {
     const mesAtual = dataRecebida.getMonth() + 1;
     const anoAtual = dataRecebida.getFullYear();
     this.buscarDespesasMesAtual(mesAtual, anoAtual);
+    this.dataEscolhida = dataRecebida;
   }
 
   fecharDetalheDespesa() {
-    const mesAtual = new Date().getMonth() + 1;
-    const anoAtual = new Date().getFullYear();
     this.exbirDetalheDespesa = false;
-    this.buscarDespesasMesAtual(mesAtual, anoAtual);
+    this.buscarDespesasMesAtual(
+      this.dataEscolhida.getMonth() + 1,
+      this.dataEscolhida.getFullYear(),
+    );
   }
 
   fecharDetalheFatura() {

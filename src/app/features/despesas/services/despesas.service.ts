@@ -30,9 +30,9 @@ export class DespesasService {
     }
 
     return this.http
-      .get<
-        DespesaRelacionamentoResponse[]
-      >(`${this.caminho}/mes/${mesInformado}/${anoInformado}`)
+      .get<DespesaRelacionamentoResponse[]>(
+        `${this.caminho}/mes/${mesInformado}/${anoInformado}`,
+      )
       .pipe(
         tap((despesas) => {
           this.cache.set(anoInformado, mesInformado, despesas);
@@ -48,11 +48,12 @@ export class DespesasService {
         headers: this.headers,
       })
       .pipe(
-        tap((despesa) => {
+        tap((despesaRelacionamento) => {
+          const date = new Date(request.data);
           this.cache.add(
-            request.data.getFullYear(),
-            request.data.getMonth(),
-            despesa,
+            date.getFullYear(),
+            date.getMonth(),
+            despesaRelacionamento,
           );
         }),
       );
@@ -78,7 +79,11 @@ export class DespesasService {
   }
 
   excluirDespesa(id: number) {
-    return this.http.delete(`${this.caminho}/${id}`);
+    return this.http.delete(`${this.caminho}/${id}`).pipe(
+      tap(() => {
+        this.cache.removeById(id);
+      }),
+    );
   }
 
   listarReceitas() {

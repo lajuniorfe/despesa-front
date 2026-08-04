@@ -89,4 +89,14 @@ export class DespesaCacheService {
       cacheItem.data[index] = despesaAtualizada;
     }
   }
+
+  removeById(id: number): void {
+    for (const [key, item] of this.cache.entries()) {
+      item.data = item.data.filter((despesa) => despesa.despesa.id !== id);
+
+      if (item.data.length === 0) {
+        this.cache.delete(key);
+      }
+    }
+  }
 }

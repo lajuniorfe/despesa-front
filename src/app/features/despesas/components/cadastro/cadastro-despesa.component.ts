@@ -1,6 +1,18 @@
 import { CurrencyPipe, NgClass } from '@angular/common';
-import { Component, EventEmitter, HostListener, inject, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  inject,
+  Input,
+  Output,
+} from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -49,7 +61,8 @@ import { DespesasService } from '../../services/despesas.service';
 export class CadastroDespesaComponent {
   @Output()
   fecharTelaEmitter = new EventEmitter();
-  @Output() retornarDespesaCadastradaEmitter = new EventEmitter<DespesaRelacionamentoResponse>();
+  @Output() retornarDespesaCadastradaEmitter =
+    new EventEmitter<DespesaRelacionamentoResponse>();
   @Input() saldoIndividualUsuarioLogado: number = 0;
   @Input() saldoIndividualUsuarioOffline: number = 0;
   recorrente: boolean = false;
@@ -106,7 +119,10 @@ export class CadastroDespesaComponent {
 
   async cadastrarDespesaFechando(event: Event) {
     const valores = this.formulario.value;
-    const valorDespesa = valores.parcela === null ? valores.valor : valores.valor / valores.parcela;
+    const valorDespesa =
+      valores.parcela === null
+        ? valores.valor
+        : valores.valor / valores.parcela;
     const podeCadastrar = await this.checarSeDespesaUltrapassaOSaldoUsuarios(
       valorDespesa,
       valores,
@@ -124,7 +140,7 @@ export class CadastroDespesaComponent {
           this.retornarDespesaCadastradaEmitter.emit(response);
           this.fecharTelaEmitter.emit();
         },
-        error: () => {
+        error: (error) => {
           this.formulario.reset();
           this.messageService.add({
             severity: 'error',
@@ -145,7 +161,7 @@ export class CadastroDespesaComponent {
 
           this.retornarDespesaCadastradaEmitter.emit(response);
         },
-        error: () => {
+        error: (error) => {
           this.formulario.reset();
         },
       });
@@ -186,7 +202,10 @@ export class CadastroDespesaComponent {
       idRecorrencia: valores.recorrencia ?? 4,
       idTipoPagamento: this.idTipoPagamento,
       idCartao: this.idCartaoSelecionado,
-      idUsuario: this.compartilhada === true ? 1 : this.tokenService.obterUsuarioLogado().id,
+      idUsuario:
+        this.compartilhada === true
+          ? 1
+          : this.tokenService.obterUsuarioLogado().id,
       parcela: valores.parcela ?? 1,
     };
 
@@ -289,7 +308,8 @@ export class CadastroDespesaComponent {
   validarParcelaEscolhida() {
     this.formulario.get('parcela')?.valueChanges.subscribe((valor) => {
       this.numeroParcela = valor;
-      this.valorParcelas = this.formulario.get('valor')?.value / this.numeroParcela;
+      this.valorParcelas =
+        this.formulario.get('valor')?.value / this.numeroParcela;
     });
   }
 
