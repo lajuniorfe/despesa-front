@@ -39,10 +39,10 @@ export class Principal {
   @Output() cadastrarDespesaEmit = new EventEmitter();
   @Output() cadastrarReceitaEmitt = new EventEmitter();
   @Output() dataEscolhidaEmitt = new EventEmitter<Date>();
+  @Input() mesDespesas: string = '';
   usuario!: UsuarioResponse;
   mostrarCategorias: boolean = false;
   dataAtual = new Date();
-  mesDespesas = '';
 
   constructor(private readonly tokenService: TokenService) {}
 
