@@ -1,0 +1,68 @@
+<!-- Calculadora -->
+<p-dialog
+  [(visible)]="calculadoraVisivel"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+  [showHeader]="false"
+  [style]="{ width: '320px' }"
+  styleClass="calculadora-dialog"
+>
+  <div class="calculadora">
+    <!-- Display -->
+    <div class="calculadora-display">
+      {{ displayCalculadora }}
+    </div>
+
+    <!-- Teclado -->
+    <div class="calculadora-botoes">
+      <button type="button" (click)="digitarCalculadora('7')">7</button>
+
+      <button type="button" (click)="digitarCalculadora('8')">8</button>
+
+      <button type="button" (click)="digitarCalculadora('9')">9</button>
+
+      <button type="button" class="operador" (click)="selecionarOperador('/')">
+        ÷
+      </button>
+
+      <button type="button" (click)="digitarCalculadora('4')">4</button>
+
+      <button type="button" (click)="digitarCalculadora('5')">5</button>
+
+      <button type="button" (click)="digitarCalculadora('6')">6</button>
+
+      <button type="button" class="operador" (click)="selecionarOperador('*')">
+        ×
+      </button>
+
+      <button type="button" (click)="digitarCalculadora('1')">1</button>
+
+      <button type="button" (click)="digitarCalculadora('2')">2</button>
+
+      <button type="button" (click)="digitarCalculadora('3')">3</button>
+
+      <button type="button" class="operador" (click)="selecionarOperador('-')">
+        −
+      </button>
+
+      <button type="button" class="limpar" (click)="limparCalculadora()">
+        C
+      </button>
+
+      <button type="button" (click)="digitarCalculadora('0')">0</button>
+
+      <!-- IMPORTANTE: vírgula -->
+      <button type="button" (click)="digitarCalculadora(',')">,</button>
+
+      <button type="button" class="operador" (click)="selecionarOperador('+')">
+        +
+      </button>
+
+      <button type="button" class="igual" (click)="finalizarCalculadora()">
+        =
+      </button>
+    </div>
+  </div>
+</p-dialog>

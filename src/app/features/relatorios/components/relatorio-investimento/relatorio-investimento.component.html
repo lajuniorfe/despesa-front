@@ -1,27 +1,94 @@
 <p-card class="w-full bg-card" header="Investimentos">
   <p>
-    Obs: Por ser tratar de investimento o valor pode variar, fazendo assim que o exibido não seja
-    fiel. Consulte seu banco:
+    Obs: Por ser tratar de investimento o valor pode variar, fazendo assim que o
+    exibido não seja fiel. Consulte seu banco:
   </p>
   <h3>
     Total Investido:
     {{ investimento | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
     Destinado a emergência:
-    {{ investimentoEmergencia | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
-  </h3>
-  <h3>
-    Previsão:
     {{
-      totalRetirada + investimento | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
-    }}  
+      investimentoEmergencia | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+    }}
   </h3>
-  <h3>Total de retirada: {{ totalRetirada | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</h3>
   <h3>
-    Saldo devedor:
-    {{ totalRetirada | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+    Valor da dívida:
+    {{ valorDivida | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
   </h3>
-  
-  <p-button >Lançar Investimento</p-button>
-  <p-button (onClick)="cadastrarInvestimento()">Lançar Retirada</p-button>
-  <p-button>Lançar Pagamento de dívida</p-button>
+  <h3>
+    Previsão após pagamento de dívida:
+    {{
+      valorDivida + investimento
+        | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+    }}
+  </h3>
+
+  <div class="flex gap-2 mb-5 w-full">
+    <div class="flex flex-column w-6">
+      <label class="text-gray-600 w-full">
+        Total de retirada:
+        {{
+          totalRetirada | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+        }}</label
+      >
+      <p-listbox
+        [options]="retiradas"
+        optionLabel="name"
+        scrollHeight="auto"
+        class="w-full"
+      >
+        <ng-template #item let-retirada>
+          <div class="flex items-center justify-between w-full gap-3">
+            <span class="truncate">{{
+              retirada.data | date: 'dd/MM/yyyy'
+            }}</span>
+            <span class="truncate">{{ retirada.descricao }}</span>
+            <span class="truncate">{{
+              retirada.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+            }}</span>
+            <span class="truncate">{{ retirada.usuario?.nome }}</span>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
+    <div class="flex flex-column w-6">
+      <label class="text-gray-600 w-full">
+        Total de pagamento da dívida:
+        {{
+          totalPagamentoDivida | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+        }}</label
+      >
+      <p-listbox
+        [options]="pagamentos"
+        optionLabel="name"
+        scrollHeight="auto"
+        class="w-full"
+      >
+        <ng-template #item let-pagamentos>
+          <div class="flex items-center justify-between w-full gap-3">
+            <span class="truncate">{{
+              pagamentos.data | date: 'dd/MM/yyyy'
+            }}</span>
+            <span class="truncate">{{ pagamentos.descricao }}</span>
+            <span class="truncate">{{
+              pagamentos.valor | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+            }}</span>
+            <span class="truncate">{{ pagamentos.usuario?.nome }}</span>
+          </div>
+        </ng-template>
+      </p-listbox>
+    </div>
+  </div>
+
+  <div class="m-3">
+    <p-button (onClick)="abrirModalCadastroInvestimento(0)"
+      >Lançar Investimento</p-button
+    >
+    <p-button (onClick)="abrirModalCadastroInvestimento(2)"
+      >Lançar Retirada</p-button
+    >
+    <p-button (onClick)="abrirModalCadastroInvestimento(3)"
+      >Lançar Pagamento de dívida</p-button
+    >
+  </div>
 </p-card>

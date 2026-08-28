@@ -7,6 +7,7 @@ import { PagamentoComponent } from './features/pagamentos/components/pagamento.c
 import { PrivateLayoutComponent } from './layout/private/private-layout';
 import { PublicLayoutComponent } from './layout/public/public-layout';
 import { RelatorioDespesaComponent } from './features/relatorios/components/relatorio-despesa/relatorio-despesa.component';
+import { CadastrarInvestimentoComponent } from './features/investimentos/components/cadastrar-investimento.component';
 
 export const routes: Routes = [
   {
@@ -46,5 +47,11 @@ export const routes: Routes = [
     component: PrivateLayoutComponent,
     canActivate: [AuthGuard],
     children: [{ path: '', component: DesejoComponent }],
+  },
+
+  {
+    path: 'investimentos/:tipo',
+    component: CadastrarInvestimentoComponent,
+    canActivate: [AuthGuard],
   },
 ];

@@ -5,7 +5,9 @@
 
       <form [formGroup]="formulario" class="w-full mt-3">
         <div class="flex flex-column mb-5">
-          <label class="block mb-1 text-sm font-medium text-gray-600" for="username"
+          <label
+            class="block mb-1 text-sm font-medium text-gray-600"
+            for="username"
             >Descrição</label
           >
           <input
@@ -20,7 +22,7 @@
 
         <div class="flex gap-2 mb-5">
           <div class="flex flex-column flex-1">
-            <label class="w-full text-gray-600" for="username">Valor</label>
+            <label class="w-full text-gray-600" for="valor">Valor</label>
             <p-inputnumber
               formControlName="valor"
               mode="currency"
@@ -29,8 +31,17 @@
               class="w-full"
               placeholder="R$ 00,00"
               [disabled]="cadastrando"
+              (onFocus)="calculadora.abrir()"
             ></p-inputnumber>
           </div>
+
+          <app-calculadora
+            #calculadora
+            [valorFormulario]="formulario.get('valor')?.value"
+            (valorCalculado)="atualizarValor($event)"
+          >
+          </app-calculadora>
+
           <div class="flex flex-column flex-1">
             <label class="w-full text-gray-600" for="username">Data</label>
             <p-datepicker
@@ -45,7 +56,9 @@
 
         <div class="flex gap-2 mb-5 w-full">
           <div class="flex flex-column w-6">
-            <label class="text-gray-600 w-full" for="formaPagamento">Tipo de Pagamento</label>
+            <label class="text-gray-600 w-full" for="formaPagamento"
+              >Tipo de Pagamento</label
+            >
             @if (telaPronta) {
               <p-select
                 [options]="grupoTipoPagamento"
@@ -59,7 +72,9 @@
                 <ng-template let-group #group>
                   <div class="flex items-center">
                     <strong
-                      ><span class="font-bold text-lg">{{ group.label }}</span></strong
+                      ><span class="font-bold text-lg">{{
+                        group.label
+                      }}</span></strong
                     >
                   </div>
                 </ng-template>
@@ -73,7 +88,9 @@
             }
           </div>
           <div class="flex flex-column w-6">
-            <label class="text-gray-600 w-full" for="categoria">Categoria</label>
+            <label class="text-gray-600 w-full" for="categoria"
+              >Categoria</label
+            >
             @if (telaPronta) {
               <p-select
                 [options]="grupoTipoCategoria"
@@ -134,11 +151,17 @@
               <div class="flex items-center">
                 <span
                   >Serão lançadas {{ numeroParcela }} parcelas de
-                  {{ valorParcelas | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</span
+                  {{
+                    valorParcelas
+                      | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR'
+                  }}</span
                 >
               </div>
               <div class="flex items-center">
-                <span>Em caso de divisão não exata, a sobra será somada à primeira parcela.</span>
+                <span
+                  >Em caso de divisão não exata, a sobra será somada à primeira
+                  parcela.</span
+                >
               </div>
             }
           </div>

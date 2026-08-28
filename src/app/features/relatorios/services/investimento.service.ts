@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { environment } from "../../../../environments/environment";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { InvestimentoResponse } from "../models/investimento.model";
-import { InvestimentoRequest } from "../models/investimento-request.model";
+import { Injectable } from '@angular/core';
+import { environment } from '../../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { InvestimentoResponse } from '../models/investimento.model';
+import { InvestimentoRequest } from '../models/investimento-request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +17,7 @@ export class InvestimentoService {
     return this.http.get<InvestimentoResponse[]>(`${this.caminho}`);
   }
 
-  cadastrarInvestimento(request:InvestimentoRequest): Observable<InvestimentoResponse> {
-    return this.http.post<InvestimentoResponse>(`${this.caminho}`, request);  
-    
-  } 
+  cadastrarInvestimento(request: InvestimentoRequest): Observable<any> {
+    return this.http.post<any>(`${this.caminho}`, request);
+  }
 }

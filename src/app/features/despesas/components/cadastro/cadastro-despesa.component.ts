@@ -37,7 +37,8 @@ import { TipoPagamentoService } from '../../../tipo-pagamentos/services/tipo-pag
 import { DespesaRequest } from '../../models/despesa-request.model';
 import { DespesaRelacionamentoResponse } from '../../models/retorno-despesa.model';
 import { DespesasService } from '../../services/despesas.service';
-
+import { DialogModule } from 'primeng/dialog';
+import { CalculadoraComponent } from '../../../../shared/components/calculadora/calculadora.component';
 @Component({
   selector: 'app-cadastro-despesa',
   imports: [
@@ -53,6 +54,8 @@ import { DespesasService } from '../../services/despesas.service';
     InputNumberModule,
     ConfirmPopupModule,
     ToastModule,
+    DialogModule,
+    CalculadoraComponent,
   ],
   templateUrl: './cadastro-despesa.component.html',
   styleUrl: './cadastro-despesa.component.css',
@@ -103,6 +106,17 @@ export class CadastroDespesaComponent {
     this.carregarDados();
     this.validarParcelaEscolhida();
     this.validarTipoPagamentoSelecionado();
+  }
+
+  abrirCalculadora(): void {
+    this.calculadoraAberta = true;
+  }
+
+  calculadoraAberta = false;
+
+  atualizarValor(valor: number): void {
+    this.formulario.get('valor')?.setValue(valor);
+    this.calculadoraAberta = false;
   }
 
   criarFormulario() {

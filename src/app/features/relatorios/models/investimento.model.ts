@@ -1,7 +1,10 @@
-export class InvestimentoResponse {
-  id: number = 0;
-  descricao: string = '';
-  valor: number = 0;
-  tipo: number = 0;
-  data: Date = new Date();  
+import { UsuarioResponse } from '../../usuarios/models/usuario-response.model';
+
+export interface InvestimentoResponse {
+  id: number;
+  descricao: string;
+  valor: number;
+  tipo: number;
+  data: Date;
+  usuario: UsuarioResponse;
 }
